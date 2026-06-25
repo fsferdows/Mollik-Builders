@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Premium golden gradient for logo elements -->
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F2D091" />
+      <stop offset="30%" stop-color="#C8A165" />
+      <stop offset="70%" stop-color="#9A7432" />
+      <stop offset="100%" stop-color="#C8A165" />
+    </linearGradient>
+    <!-- Deep forest green background configuration -->
+    <radialGradient id="green-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1B4D3E" />
+      <stop offset="100%" stop-color="#0E2E24" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Base Circle with soft perimeter border -->
+  <circle cx="256" cy="256" r="240" fill="url(#green-bg)" stroke="url(#gold-grad)" stroke-width="6" />
+
+  <!-- Monogram Logo Mark (Minimalist Architectural MB Structure) -->
+  <g transform="translate(116, 126)">
+    <!-- Vertical Pillar Support Left (Representing solid structural integrity) -->
+    <rect x="30" y="30" width="22" height="200" rx="4" fill="url(#gold-grad)" />
+
+    <!-- Sleek archways / building outline (M) -->
+    <path d="M 52,50 L 110,130 L 110,230" fill="none" stroke="url(#gold-grad)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 110,130 L 168,50 L 190,50 L 190,230" fill="none" stroke="url(#gold-grad)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Classic curved balconies / dome structure (B elements) -->
+    <path d="M 190,50 C 235,50 255,85 255,115 C 255,140 235,145 190,145" fill="none" stroke="url(#gold-grad)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 190,145 C 240,145 260,180 260,210 C 260,235 235,240 190,240" fill="none" stroke="url(#gold-grad)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Architectural horizon accent line -->
+    <line x1="10" y1="240" x2="270" y2="240" stroke="url(#gold-grad)" stroke-width="8" stroke-linecap="round" />
+  </g>
+</svg>

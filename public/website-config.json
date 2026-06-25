@@ -1,0 +1,73 @@
+{
+  "hotlineNumber": "+880 1715-120802",
+  "hotlineNumbersList": [
+    "+880 1715-120802",
+    "+880 1811-253989",
+    "+880 1928-258818"
+  ],
+  "founderName": "Md. Saheb Ali Mollik",
+  "founderNameBn": "মোঃ সাহেব আলী মল্লিক",
+  "founderTitle": "Founder, Chairman & Managing Director",
+  "founderTitleBn": "প্রতিষ্ঠাতা, চেয়ারম্যান ও ব্যবস্থাপনা পরিচালক",
+  "founderPhone": "+880 1715-120802",
+  "founderEmail": "sahebalimollik@mollikbuilders.com",
+  "founderLocation": "Bhuiyan Bari Mor, Plot-Miyabari, (West side of Uttarkhan Primary School), Uttarkhan, Uttara, Dhaka-1230",
+  "founderLocationBn": "ভূঁইয়া বাড়ি মোড়, প্লট-মিয়াবাড়ি, (উত্তরখান সরকারি প্রাথমিক বিদ্যালয়ের পশ্চিম পাশে), উত্তরখান, উত্তরা, ঢাকা-১২৩০",
+  "founderBio": "Under the visionary leadership of Chairman Md. Saheb Ali Mollik, Mollik Builders stands as a standard-bearer of absolute integrity, architectural safety, and construction transparency in Uttara and Dakshinkhan. Emphasizing modern earthquake-resistant structural safety and complete legal disclosures, he paves the way for secure, timeless residential masterpieces.",
+  "founderBioBn": "চেয়ারম্যান মোঃ সাহেব আলী মল্লিকের দূরদর্শী নেতৃত্বে মল্লিক বিল্ডার্স উত্তরা ও দক্ষিণখানের আবাসন খাতের সততা, নিরাপত্তা ও সফলতার প্রতীক হিসেবে দাঁড়িয়ে আছে। আধুনিক ভূমিকম্প সহনশীল কাঠামো এবং শতভাগ আইনি স্বচ্ছতা বজায় রেখে তিনি গড়ে চলেছেন নিখুঁত ও গৌরবময় আবাসন প্রজেক্টসমূহ।",
+  "founderExp": "25+ Years of Real Estate & Structural Engineering Supremacy",
+  "founderExpBn": "রিয়েল এস্টেট ও স্ট্রাকচারাল ইঞ্জিনিয়ারিংয়ে ২৫+ বছরের শ্রেষ্ঠত্ব",
+  "founderImage": "/chairman.png",
+  "aboutTitle": "About Our Enterprise",
+  "aboutTitleBn": "আমাদের উদ্যোগ সম্পর্কে",
+  "aboutText": "Under the leadership of Md. Saheb Ali Mollik, Mollik Builders has built an unshakeable reputation for engineering excellence and timely deliveries. Every building we build uses premium grade-60 steel, certified robust concrete mixes, and seismically compliant deep foundations designed to safely withstand zone-3 earthquake parameters.",
+  "aboutTextBn": "মোঃ সাহেব আলী মল্লিকের নেতৃত্বে মল্লিক বিল্ডার্স ইঞ্জিনিয়ারিং শ্রেষ্ঠত্ব এবং সময়মতো হস্তান্তরের একটি অভাবনীয় সুনাম গড়ে তুলেছে। আমাদের নির্মিত প্রতিটি ভবনে প্রিমিয়াম গ্রেড-৬০ স্টিল, প্রত্যয়িত শক্তিশালী ঢালাই মিশ্রণ এবং শতভাগ ভূমিকম্প সহনশীল ডিপ ফাউন্ডেশন নিশ্চিত করা হয়েছে।",
+  "aboutImage": "/uploads/project 2(1).png",
+  "heroSlides": [
+    {
+      "image": "/uploads/project 1.png",
+      "title": "Architectural Excellence & Modern Design",
+      "titleBn": "স্থাপত্যের শ্রেষ্ঠত্ব ও আধুনিক নকশা",
+      "subtitle": "Mollik Builders Premium",
+      "subtitleBn": "মল্লিক বিল্ডার্স প্রিমিয়াম",
+      "description": "Designed with clean structural aesthetics, optimal natural light ventilation, and maximum space utility.",
+      "descriptionBn": "পরিষ্কার নান্দনিক গঠন, সর্বোচ্চ প্রাকৃতিক আলো-বাতাস চলাচল এবং পর্যাপ্ত জায়গা উপযোগী নকশা।"
+    },
+    {
+      "image": "/uploads/Project 2.png",
+      "title": "The Art of Luxurious Urban Living",
+      "titleBn": "শহুরে অভিজাত জীবনযাত্রার নতুন সংজ্ঞা",
+      "subtitle": "Quiet Luxury Residences",
+      "subtitleBn": "শান্ত ও অভিজাত আবাসন",
+      "description": "Experience structural mastery paired with quiet, natural luxury in the heart of Dhaka.",
+      "descriptionBn": "ঢাকার হৃদয়ে মনোরম প্রকৃতির ছোঁয়ায় বিলাসবহুল ও সুরক্ষিত আবাসন।"
+    },
+    {
+      "image": "/uploads/project 3.png",
+      "title": "Sustainable Eco-Friendly High-Rises",
+      "titleBn": "পরিবেশবান্ধব ও সবুজ আবাসন",
+      "subtitle": "Eco-conscious Construction",
+      "subtitleBn": "পরিবেশ সচেতন নির্মাণ",
+      "description": "Engineered to withstand extreme seismic loads while supporting verdant green landscaping features.",
+      "descriptionBn": "ভূমিকম্প সহনশীল শক্তিশালী কাঠামো এবং দৃষ্টিনন্দন ঝুলন্ত সুবজের এক চমৎকার সমন্বয়।"
+    },
+    {
+      "image": "/uploads/project 8.png",
+      "title": "State-of-the-Art Structural Engineering",
+      "titleBn": "অত্যাধুনিক স্ট্রাকচারাল ইঞ্জিনিয়ারিং",
+      "subtitle": "RAJUK Approved Blueprint",
+      "subtitleBn": "রাজউক অনুমোদিত ব্লু-প্রিন্ট",
+      "description": "Flawlessly implemented designs matching international BNBC standards and RAJUK requirements.",
+      "descriptionBn": "আন্তর্জাতিক বিএনবিসি মানদণ্ড এবং রাজউক অনুমোদন মেনে নিখুঁত নির্মাণ।"
+    },
+    {
+      "image": "/uploads/project 9.png",
+      "title": "Exclusive Layouts & Floor Plans",
+      "titleBn": "এক্সক্লুসিভ লেআউট ও ফ্লোর প্ল্যান",
+      "subtitle": "Smart Space Optimization",
+      "subtitleBn": "স্মার্ট স্পেস অপ্টিমাইজেশন",
+      "description": "Meticulously crafted rooms designed to maximize comfort, privacy, and absolute visual peace.",
+      "descriptionBn": "সর্বাধিক স্বাচ্ছন্দ্য, গোপনীয়তা এবং নিখুঁত প্রশান্তি প্রদানের জন্য চমৎকার কক্ষ বিন্যাস নকশা।"
+    }
+  ]
+}

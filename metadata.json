@@ -1,0 +1,6 @@
+{
+  "name": "MOLLIK BUILDERS LTD",
+  "description": "Premium luxury real estate website for Mollik Builders with English/Bengali support and interactive unit floor plan visualizers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 150" width="100%" height="100%">
+  <defs>
+    <!-- Metallic gold gradients -->
+    <linearGradient id="gold-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F9E2B6" />
+      <stop offset="25%" stop-color="#E1BA79" />
+      <stop offset="50%" stop-color="#C8A165" />
+      <stop offset="75%" stop-color="#A57F43" />
+      <stop offset="100%" stop-color="#C8A165" />
+    </linearGradient>
+
+    <linearGradient id="gold-secondary" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C8A165" />
+      <stop offset="50%" stop-color="#F2D091" />
+      <stop offset="100%" stop-color="#9A7432" />
+    </linearGradient>
+
+    <!-- Deep rich emerald green radial gradient -->
+    <radialGradient id="emerald-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1B4D3E" />
+      <stop offset="100%" stop-color="#0A2C21" />
+    </radialGradient>
+  </defs>
+
+  <!-- Left: Circle Luxury Emblem -->
+  <g transform="translate(10, 10)">
+    <!-- Main Background Circle with shadow look -->
+    <circle cx="65" cy="65" r="62" fill="#061c15" />
+    <circle cx="65" cy="65" r="58" fill="url(#emerald-bg)" stroke="url(#gold-primary)" stroke-width="4.5" />
+    <circle cx="65" cy="65" r="50" fill="transparent" stroke="url(#gold-secondary)" stroke-width="1" stroke-dasharray="4,2" />
+
+    <!-- Interlocking Monogram MB -->
+    <g transform="translate(30, 31)">
+      <!-- Left Column of M -->
+      <path d="M 12,8 Q 12,4 16,4 H 17 Q 21,4 21,8 V 60 Q 21,64 17,64 H 16 Q 12,64 12,60 Z" fill="url(#gold-primary)" />
+      <!-- Diagonal down of M -->
+      <path d="M 16,4 L 35,36 L 54,4" fill="none" stroke="url(#gold-primary)" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Right Column of M -->
+      <path d="M 49,8 Q 49,4 53,4 H 54 Q 58,4 58,8 V 60 Q 58,64 54,64 H 53 Q 49,64 49,60 Z" fill="url(#gold-primary)" />
+      
+      <!-- Premium B Arch Curvature interlocking with M -->
+      <path d="M 50,11 C 68,11 75,22 75,30 C 75,37 68,40 50,40" fill="none" stroke="url(#gold-secondary)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M 50,40 C 70,40 77,50 77,59 C 77,66 70,68 50,68" fill="none" stroke="url(#gold-secondary)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+      
+      <!-- Architectural Foundation Line -->
+      <line x1="2" y1="64" x2="68" y2="64" stroke="url(#gold-primary)" stroke-width="3" stroke-linecap="round" />
+    </g>
+  </g>
+
+  <!-- Right: Deluxe Brand Wordmark -->
+  <g transform="translate(155, 32)">
+    <!-- Luxury Brand Name -->
+    <text x="0" y="32" font-family="'Inter', 'Playfair Display', 'Georgia', 'Times New Roman', serif" font-weight="900" font-size="34" letter-spacing="4.5" fill="white">
+      MOLLIK
+    </text>
+    <text x="162" y="32" font-family="'Inter', 'Playfair Display', 'Georgia', 'Times New Roman', serif" font-weight="900" font-size="34" letter-spacing="4.5" fill="url(#gold-primary)">
+      BUILDERS
+    </text>
+
+    <!-- Professional Segment Title / Subtitle -->
+    <text x="3" y="62" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="11" letter-spacing="7.5" fill="url(#gold-secondary)" font-weight="700">
+      PREMIUM REAL ESTATE DEVELOPMENT
+    </text>
+
+    <!-- Corporate Value Alignment -->
+    <text x="3" y="80" font-family="'Inter', sans-serif" font-size="9" letter-spacing="4.5" fill="#8FA499" font-weight="500">
+      SAFETY &bull; INTEGRITY &bull; ZERO-LOSS SPACE DESIGN
+    </text>
+  </g>
+</svg>

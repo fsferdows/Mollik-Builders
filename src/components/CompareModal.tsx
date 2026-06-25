@@ -90,6 +90,10 @@ export default function CompareModal({ selectedProjects, language, onClose, onSe
 
         {/* Dynamic Comparison Sheet Container (Scrollable) */}
         <div className="flex-1 overflow-auto p-5 sm:p-6">
+          {/* Scroll hint on mobile viewports */}
+          <div className="block sm:hidden bg-[#1B4D3E]/10 text-[#1B4D3E] text-[8.5px] font-mono uppercase text-center py-2 px-3 border border-[#1B4D3E]/20 mb-4 tracking-widest rounded-lg">
+            ↔ Swipe left/right to view all specs / ডানে-বামে স্ক্রোল করুন
+          </div>
           <div className="min-w-[650px] space-y-6">
             
             {/* Table Matrix Header Row - Project Images & Titles */}

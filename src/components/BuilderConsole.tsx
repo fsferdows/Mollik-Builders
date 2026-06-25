@@ -461,7 +461,7 @@ export default function BuilderConsole({ language, selectedProject }: BuilderCon
                 className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch"
               >
                 {/* Feasibility Study Left Index Column */}
-                <div className="lg:col-span-4 border-r border-neutral-850 pr-6 flex flex-col justify-between">
+                <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-neutral-850 pb-6 lg:pb-0 lg:pr-6 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-2 text-gold-300 font-mono text-[9px] uppercase tracking-wider mb-2">
                       <Sparkles size={11} className="text-gold-400 animate-pulse" />
@@ -722,7 +722,7 @@ export default function BuilderConsole({ language, selectedProject }: BuilderCon
                 className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch"
               >
                 {/* Cost Dashboard Left Settings Panel */}
-                <div className="lg:col-span-4 border-r border-neutral-850 pr-6 flex flex-col justify-between">
+                <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-neutral-850 pb-6 lg:pb-0 lg:pr-6 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-2 text-gold-300 font-mono text-[9px] uppercase tracking-wider mb-2">
                       <DollarSign size={11} className="text-gold-400" />
@@ -1014,7 +1014,7 @@ export default function BuilderConsole({ language, selectedProject }: BuilderCon
                 className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch"
               >
                 {/* Left Form Column */}
-                <div className="md:col-span-5 border-r border-neutral-850 pr-6 flex flex-col justify-between">
+                <div className="md:col-span-5 border-b md:border-b-0 md:border-r border-neutral-850 pb-6 md:pb-0 md:pr-6 flex flex-col justify-between">
                   <div>
                     <h3 className="font-serif text-lg text-white mb-2">
                       {language === 'bn' ? 'ডিএক্সএফ ও পিডিএফ ক্যাড ফাইল দাবি করুন' : 'Request DXF / PDF Blueprints'}

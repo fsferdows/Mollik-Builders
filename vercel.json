@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/project-details.php",
@@ -10,7 +11,7 @@
       "destination": "/api/index.ts"
     },
     {
-      "source": "/((?!assets/|.*\\..*$).*)",
+      "source": "/((?!assets/|uploads/|.*\\..*$).*)",
       "destination": "/index.html"
     }
   ]

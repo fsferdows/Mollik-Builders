@@ -2446,6 +2446,26 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* Website Row */}
+                  <div className="flex items-start gap-2.5">
+                    <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 shrink-0">
+                      <Globe className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-[9px] font-mono font-bold tracking-widest text-[#C8A165] uppercase leading-none">
+                        {language === "en" ? "Website" : "ওয়েবসাইট"}
+                      </h4>
+                      <a
+                        href="https://www.khoj24bd.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] text-sky-400 hover:text-white font-mono block truncate mt-1.5 transition-colors"
+                      >
+                        www.khoj24bd.com
+                      </a>
+                    </div>
+                  </div>
+
                 </div>
 
               </div>

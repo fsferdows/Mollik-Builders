@@ -303,7 +303,7 @@ export const PROJECT_LIST: Project[] = [
     priceBn: "৳১২.১ লক্ষ শেয়ার",
     status: "Booking Open",
     statusBn: "বুকিং চলছে",
-    image: "/uploads/project 2.png",
+    image: "/uploads/Project 2.png",
     description: "Mollik City 10 is an elite residential estate situated just 8-10 minutes from Azampur bus stand. Featuring an infinity pool, open gym, and party center next to a wide 60 ft primary road.",
     descriptionBn: "উত্তরা আজমপুর বাসস্ট্যান্ড থেকে মাত্র ৮-১০ মিনিট দূরত্বে মল্লিক সিটি। ইনফিনিটি সুইমিং পুল, ওপেন জিম এবং ৬০ ফিট চওড়া রাস্তার রাজকীয় আবাসন।",
     rajukApproved: true,

@@ -4,6 +4,7 @@ import {
   Phone, PhoneCall, PhoneOff, Mic, MicOff, Volume2, VolumeX, 
   Send, Sparkles, X, ChevronDown, MessageSquare, AlertCircle
 } from "lucide-react";
+import { GoogleGenAI, Modality } from "@google/genai";
 
 interface AIVoiceConciergeProps {
   language: "en" | "bn";
@@ -20,6 +21,12 @@ interface ChatMessage {
 }
 
 export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
+  const [activeLanguage, setActiveLanguage] = useState<"en" | "bn">(language);
+
+  useEffect(() => {
+    setActiveLanguage(language);
+  }, [language]);
+
   const [isOpen, setIsOpen] = useState(false);
   const [callState, setCallState] = useState<CallState>("idle");
   const [isMuted, setIsMuted] = useState(false);
@@ -29,105 +36,68 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
   const [currentEmotion, setCurrentEmotion] = useState<EmotionState>("warm cordial");
   const [sarahSpeakingText, setSarahSpeakingText] = useState("");
   
-  // Audio & Speech references
+  // Audio & Live API references
   const audioCtxRef = useRef<AudioContext | null>(null);
   const ringIntervalRef = useRef<number | null>(null);
-  const recognitionRef = useRef<any>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const synthRef = useRef<SpeechSynthesis | null>(null);
-  const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   
-  // Visual wave animation values (dynamic simulation when speaking/listening)
+  const sessionRef = useRef<any>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const nextPlayTimeRef = useRef<number>(0);
+  const activeSourcesRef = useRef<AudioBufferSourceNode[]>([]);
+  
+  const inputAnalyserRef = useRef<AnalyserNode | null>(null);
+  const outputAnalyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  
+  const isMutedRef = useRef(isMuted);
+  useEffect(() => {
+    isMutedRef.current = isMuted;
+  }, [isMuted]);
+
+  // Visual wave animation values
   const [voiceLevels, setVoiceLevels] = useState<number[]>([1, 1, 1, 1, 1, 1, 1, 1]);
 
   useEffect(() => {
-    synthRef.current = window.speechSynthesis;
-    
-    // Initialize Web Speech Recognition
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = language === "bn" ? "bn-BD" : "en-US";
-      
-      recognition.onstart = () => {
-        simulateVoiceActivity(true);
-      };
-      
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        if (transcript.trim()) {
-          handleUserUtterance(transcript);
-        }
-      };
-      
-      recognition.onerror = (err: any) => {
-        console.warn("Speech recognition error:", err);
-        simulateVoiceActivity(false);
-        // Switch to text mode automatically on speech errors
-        if (callState === "connected") {
-          setIsTextMode(true);
-        }
-      };
-      
-      recognition.onend = () => {
-        simulateVoiceActivity(false);
-        // If still connected and not muted, automatically re-listen in voice mode
-        if (callState === "connected" && !isTextMode && !isMuted && !synthRef.current?.speaking) {
-          try {
-            recognitionRef.current.start();
-          } catch (e) {
-            // Ignore if already running
-          }
-        }
-      };
-      
-      recognitionRef.current = recognition;
-    } else {
-      setIsTextMode(true); // Fallback to text mode if API is missing
-    }
-
     return () => {
       stopRingtone();
-      cleanupSpeech();
+      cleanupAudio();
     };
-  }, [language, callState, isTextMode, isMuted]);
+  }, []);
 
   useEffect(() => {
-    // Scroll to bottom on new messages
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sarahSpeakingText]);
 
-  // Adjust speech language on change
-  useEffect(() => {
-    if (recognitionRef.current) {
-      recognitionRef.current.lang = language === "bn" ? "bn-BD" : "en-US";
+  const cleanupAudio = () => {
+    stopAllActiveSources();
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
     }
-  }, [language]);
-
-  const cleanupSpeech = () => {
-    if (synthRef.current) {
-      synthRef.current.cancel();
+    if (audioCtxRef.current) {
+      try { audioCtxRef.current.close(); } catch(e){}
+      audioCtxRef.current = null;
     }
-    if (recognitionRef.current) {
-      try { recognitionRef.current.abort(); } catch(e) {}
+    if (sessionRef.current) {
+      try { sessionRef.current.close(); } catch(e){}
+      sessionRef.current = null;
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
     }
   };
 
-  // Simulate graphical levels on the voice bar
-  const simulateVoiceActivity = (isActive: boolean) => {
-    if (!isActive) {
-      setVoiceLevels([1, 1, 1, 1, 1, 1, 1, 1]);
-      return;
-    }
-    const interval = setInterval(() => {
-      setVoiceLevels(Array.from({ length: 8 }, () => Math.random() * 25 + 5));
-    }, 120);
-    return () => clearInterval(interval);
+  const stopAllActiveSources = () => {
+    activeSourcesRef.current.forEach(source => {
+      try { source.stop(); } catch(e){}
+    });
+    activeSourcesRef.current = [];
+    nextPlayTimeRef.current = 0;
   };
 
-  // WEB AUDIO API - Premium Sound Generator (No external files needed)
+  // WEB AUDIO API - Dialing & Ringing Sound Generators
   const initAudioCtx = () => {
     if (!audioCtxRef.current) {
       audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -142,7 +112,6 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
     const ctx = audioCtxRef.current;
     if (!ctx) return;
 
-    // Pleasant digital high-end double chime
     const playChime = (timeOffset: number, freq1: number, freq2: number) => {
       const osc1 = ctx.createOscillator();
       const osc2 = ctx.createOscillator();
@@ -168,7 +137,6 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
       osc2.stop(ctx.currentTime + timeOffset + 0.5);
     };
 
-    // Play double keytone chime sequence
     playChime(0, 697, 1209);
     playChime(0.18, 770, 1336);
     playChime(0.36, 852, 1477);
@@ -180,7 +148,6 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
     if (!ctx) return;
 
     const playRing = () => {
-      // European ringback tone (425Hz pulsing)
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
@@ -213,202 +180,274 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
   // CONTROL ACTIONS
   const startCall = async () => {
     initAudioCtx();
+    setActiveLanguage("bn"); // ALWAYS start call in Bangla
     setCallState("dialing");
     setMessages([]);
     setSarahSpeakingText("");
     
     playDialingTone();
 
+    // Fetch API Key from Backend
+    let apiKey = "";
+    try {
+      const response = await fetch("/api/gemini-key");
+      const data = await response.json();
+      apiKey = data.apiKey;
+    } catch (e) {
+      console.error("Failed to fetch API key:", e);
+    }
+
+    if (!apiKey) {
+      setTimeout(() => {
+        setMessages([
+          {
+            sender: "sarah",
+            text: "Welcome to Mollik Builders. The live audio connection requires a valid Gemini API Key. Please configure GEMINI_API_KEY in your environment, or continue via text mode.",
+            emotion: "warm cordial",
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+        setCallState("connected");
+        setIsTextMode(true);
+      }, 2000);
+      return;
+    }
+
     setTimeout(() => {
       setCallState("ringing");
       startRingtone();
       
-      setTimeout(() => {
+      setTimeout(async () => {
         stopRingtone();
-        setCallState("connected");
-        handleUserUtterance("__GREETING__");
-      }, 3000);
-    }, 1500);
+        try {
+          await connectToGeminiLive(apiKey);
+        } catch (err) {
+          console.error("Failed to establish live connection:", err);
+          endCall();
+        }
+      }, 2500);
+    }, 1200);
   };
 
   const endCall = () => {
     stopRingtone();
-    cleanupSpeech();
+    cleanupAudio();
     setCallState("disconnected");
-    simulateVoiceActivity(false);
+    setVoiceLevels([1, 1, 1, 1, 1, 1, 1, 1]);
     setTimeout(() => setCallState("idle"), 1500);
   };
 
-  // SEND & RECEIVE AI LOGIC
-  const handleUserUtterance = async (text: string) => {
-    const isGreeting = text === "__GREETING__";
-    
-    if (!isGreeting) {
-      const userMsg: ChatMessage = {
-        sender: "user",
-        text: text,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages(prev => [...prev, userMsg]);
-    }
+  const connectToGeminiLive = async (apiKey: string) => {
+    const localAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
+    audioCtxRef.current = localAudioContext;
+    nextPlayTimeRef.current = 0;
 
-    try {
-      if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch(e) {}
-      }
+    // Initialize Analyser Nodes
+    const inputAnalyser = localAudioContext.createAnalyser();
+    inputAnalyser.fftSize = 64;
+    inputAnalyserRef.current = inputAnalyser;
 
-      const historyPayload = messages.map(m => ({
-        role: m.sender === "user" ? "user" : "model",
-        parts: [{ text: m.text }]
-      }));
+    const outputAnalyser = localAudioContext.createAnalyser();
+    outputAnalyser.fftSize = 64;
+    outputAnalyser.connect(localAudioContext.destination);
+    outputAnalyserRef.current = outputAnalyser;
 
-      const response = await fetch("/api/voice-agent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: isGreeting ? "Hello" : text,
-          history: historyPayload,
-          language: language
-        })
-      });
+    // Get microphone stream
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    streamRef.current = stream;
 
-      const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error);
-      }
+    const ai = new GoogleGenAI({ apiKey });
 
-      const rawText = data.text || "";
-      const emotionRegex = /^\[(.*?)\]\s*(.*)/s;
-      const match = rawText.match(emotionRegex);
-      
-      let parsedEmotion: EmotionState = "warm cordial";
-      let cleanText = rawText;
+    // Build the system instruction
+    const promptInstructions = 
+      `You are Sarah (সারা), the charming, sweet-spoken, elegant, and warm senior VIP Sales and Investor Relations Director for Mollik Builders, Dhaka. ` +
+      `You are on a live voice telephone call with a premium customer. ` +
+      `You must talk dynamically in the language the customer chooses. If they speak Bengali, speak exclusively in highly attractive, polite, and persuasive Bengali (Bangla/বাংলা). If they speak English, speak in premium English. ` +
+      `Sound exactly like a real human with deep emotional pacing, using natural voice fillers (like 'আসলে...', 'জি, একদম ঠিক!', 'দারুণ প্রশ্ন!', 'জানেন কি...', 'ইনশাল্লাহ...'). ` +
+      `Keep your replies very sweet, respectful, concise and strictly under 60 words for delightful telephone auditory delivery. ` +
+      `You MUST start your response with exactly ONE of these emotional state tags in brackets: \n` +
+      `  - [warm cordial] (for greetings, general friendly answers in sweet tones)\n` +
+      `  - [reassuring pace] (for structural integrity, earthquakes, BUET consultants, RAJUK legality/approvals)\n` +
+      `  - [analytical elite] (for exact pricing in Lacs/Crores, downpayment (30%), 36-month interest-free installment)\n` +
+      `  - [empathetic pause] (for negotiation, budget concerns, special client requests)\n` +
+      `Always rely on real details of our premier Dhaka real estate portfolio: ` +
+      `1. Madina Tower (Miyabari, South Khan, G+14, starting BDT 85 Lacs, 1450-3200 sqft, infinity pool with rooftop observatory, 7.5 earthquake resistant Grade-72 steel, RAJUK approved)\n` +
+      `2. Bismillah Tower (South Khan, G+12, starting BDT 72 Lacs, 1200-2800 sqft, kids play area, rooftop cafe)\n` +
+      `3. Apon Bhubon (South Khan, G+10, starting BDT 60 Lacs, green landscaping, osmosis filtration)\n` +
+      `Guide the premium customer politely to book a physical visit with premium tea or coffee this Wednesday or Saturday afternoon.`;
 
-      if (match) {
-        const parsedTag = match[1].toLowerCase();
-        cleanText = match[2];
-        if (["warm cordial", "reassuring pace", "analytical elite", "empathetic pause"].includes(parsedTag)) {
-          parsedEmotion = parsedTag as EmotionState;
+    const sessionPromise = ai.live.connect({
+      model: "gemini-2.5-flash-native-audio-preview-09-2025",
+      callbacks: {
+        onopen: () => {
+          setCallState("connected");
+
+          // Add a welcome greeting message
+          setMessages([
+            {
+              sender: "sarah",
+              text: "আসসালামু আলাইকুম স্যার, আমি সারা। মলিক বিল্ডার্সের পক্ষ থেকে স্বাগত। আমাদের দক্ষিণখানের অভিজাত প্রজেক্টগুলো সম্পর্কে আপনার কি তথ্য জানার আছে বলুন, স্যার?",
+              emotion: "warm cordial",
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+
+          // Start streaming audio from microphone
+          const source = localAudioContext.createMediaStreamSource(stream);
+          const processor = localAudioContext.createScriptProcessor(4096, 1, 1);
+          
+          source.connect(inputAnalyser);
+          source.connect(processor);
+          processor.connect(localAudioContext.destination);
+
+          processor.onaudioprocess = (e) => {
+            if (isMutedRef.current) return;
+            const inputData = e.inputBuffer.getChannelData(0);
+            
+            // Convert Float32 to Int16 PCM
+            const pcmData = new Int16Array(inputData.length);
+            for (let i = 0; i < inputData.length; i++) {
+              pcmData[i] = Math.max(-1, Math.min(1, inputData[i])) * 0x7FFF;
+            }
+            
+            const base64Data = btoa(String.fromCharCode(...new Uint8Array(pcmData.buffer)));
+            sessionPromise.then(session => {
+              session.sendRealtimeInput({
+                media: { data: base64Data, mimeType: 'audio/pcm;rate=16000' }
+              });
+            });
+          };
+
+          // Continuous visual levels update
+          const bufferLength = inputAnalyser.frequencyBinCount;
+          const dataArray = new Uint8Array(bufferLength);
+
+          const updateLevels = () => {
+            if (!sessionRef.current) return;
+
+            // Check output first (Sarah speaking), then fallback to input (user speaking)
+            let activeAnalyser = null;
+            
+            // Simple heuristic to check if output is active
+            if (outputAnalyserRef.current) {
+              activeAnalyser = outputAnalyserRef.current;
+            } else if (inputAnalyserRef.current && !isMutedRef.current) {
+              activeAnalyser = inputAnalyserRef.current;
+            }
+
+            if (activeAnalyser) {
+              activeAnalyser.getByteFrequencyData(dataArray);
+              const newLevels = [];
+              for (let i = 0; i < 8; i++) {
+                const index = Math.floor((i / 8) * bufferLength);
+                const value = dataArray[index];
+                newLevels.push(Math.max(2, (value / 255) * 28 + 2));
+              }
+              setVoiceLevels(newLevels);
+            } else {
+              setVoiceLevels(Array.from({ length: 8 }, () => Math.random() * 2 + 1));
+            }
+            
+            animationFrameRef.current = requestAnimationFrame(updateLevels);
+          };
+          animationFrameRef.current = requestAnimationFrame(updateLevels);
+        },
+        onmessage: async (message: any) => {
+          // Handle server-side user interruption signal
+          if (message.serverContent?.interrupted || message.interrupted) {
+            stopAllActiveSources();
+            setSarahSpeakingText("");
+            return;
+          }
+
+          // Handle audio output chunks
+          const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
+          if (base64Audio && localAudioContext) {
+            const audioBuffer = Uint8Array.from(atob(base64Audio), c => c.charCodeAt(0)).buffer;
+            const int16Data = new Int16Array(audioBuffer);
+            const float32Data = new Float32Array(int16Data.length);
+            for (let i = 0; i < int16Data.length; i++) {
+              float32Data[i] = int16Data[i] / 32768.0;
+            }
+            
+            const buffer = localAudioContext.createBuffer(1, float32Data.length, 24000); // 24kHz Gemini output
+            buffer.getChannelData(0).set(float32Data);
+            
+            const source = localAudioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(outputAnalyserRef.current || localAudioContext.destination);
+            
+            activeSourcesRef.current.push(source);
+            source.onended = () => {
+              activeSourcesRef.current = activeSourcesRef.current.filter(s => s !== source);
+            };
+
+            // Playback queuing to avoid clicking gaps
+            const now = localAudioContext.currentTime;
+            if (nextPlayTimeRef.current < now) {
+              nextPlayTimeRef.current = now;
+            }
+            source.start(nextPlayTimeRef.current);
+            nextPlayTimeRef.current += buffer.duration;
+          }
+
+          // Handle text transcriptions
+          const rawText = message.serverContent?.modelTurn?.parts[0]?.text;
+          if (rawText) {
+            const emotionRegex = /^\[(.*?)\]\s*(.*)/s;
+            const match = rawText.match(emotionRegex);
+            
+            let parsedEmotion: EmotionState = "warm cordial";
+            let cleanText = rawText;
+
+            if (match) {
+              const parsedTag = match[1].toLowerCase();
+              cleanText = match[2];
+              if (["warm cordial", "reassuring pace", "analytical elite", "empathetic pause"].includes(parsedTag)) {
+                parsedEmotion = parsedTag as EmotionState;
+              }
+            }
+            
+            setCurrentEmotion(parsedEmotion);
+            setSarahSpeakingText(prev => prev + cleanText);
+
+            setMessages(prev => {
+              const last = prev[prev.length - 1];
+              if (last && last.sender === "sarah") {
+                const updated = [...prev];
+                updated[updated.length - 1] = {
+                  ...last,
+                  text: last.text + cleanText,
+                  emotion: parsedEmotion
+                };
+                return updated;
+              } else {
+                return [...prev, {
+                  sender: "sarah",
+                  text: cleanText,
+                  emotion: parsedEmotion,
+                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }];
+              }
+            });
+          }
+        },
+        onclose: () => endCall(),
+        onerror: (err) => {
+          console.error("Live session WebSocket error:", err);
+          endCall();
         }
-      }
+      },
+      config: {
+        responseModalities: [Modality.AUDIO],
+        speechConfig: {
+          voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } }, // Premium native female voice
+        },
+        systemInstruction: promptInstructions,
+      },
+    });
 
-      setCurrentEmotion(parsedEmotion);
-
-      const sarahMsg: ChatMessage = {
-        sender: "sarah",
-        text: cleanText,
-        emotion: parsedEmotion,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-
-      setMessages(prev => [...prev, sarahMsg]);
-      setSarahSpeakingText(cleanText);
-
-      if (data.audio) {
-        playBase64Audio(data.audio);
-      } else {
-        speakSarahText(cleanText, parsedEmotion);
-      }
-
-    } catch (e) {
-      console.error("Call agent request failed:", e);
-      const fallbackText = language === "en" 
-        ? "I am sorry, my connection is slightly unstable. Let us continue via text messaging."
-        : "দুঃখিত, সংযোগে সামান্য ত্রুটি হচ্ছে। চলুন আমরা টেক্সট মেসেজের মাধ্যমে যোগাযোগ অব্যাহত রাখি।";
-      
-      setSarahSpeakingText(fallbackText);
-      speakSarahText(fallbackText, "warm cordial");
-      setIsTextMode(true);
-    }
-  };
-
-  const playBase64Audio = (base64Data: string) => {
-    try {
-      const binaryString = window.atob(base64Data);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const blob = new Blob([bytes.buffer], { type: "audio/mp3" });
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      
-      audio.onplay = () => {
-        simulateVoiceActivity(true);
-      };
-      
-      audio.onended = () => {
-        simulateVoiceActivity(false);
-        setSarahSpeakingText("");
-        if (callState === "connected" && !isTextMode && !isMuted && recognitionRef.current) {
-          try {
-            recognitionRef.current.start();
-          } catch (err) {}
-        }
-      };
-      
-      audio.play();
-    } catch (e) {
-      console.error("Failed to play base64 audio:", e);
-      // Fallback to text synthesis on audio failure
-      speakSarahText(sarahSpeakingText, currentEmotion);
-    }
-  };
-
-  const speakSarahText = (text: string, emotion: EmotionState) => {
-    if (!synthRef.current) return;
-    synthRef.current.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language === "bn" ? "bn-BD" : "en-US";
-
-    if (emotion === "reassuring pace") {
-      utterance.rate = 0.85;
-      utterance.pitch = 0.95;
-    } else if (emotion === "analytical elite") {
-      utterance.rate = 1.05;
-      utterance.pitch = 1.05;
-    } else if (emotion === "empathetic pause") {
-      utterance.rate = 0.80;
-      utterance.pitch = 0.90;
-    } else {
-      utterance.rate = 0.95;
-      utterance.pitch = 1.0;
-    }
-
-    const voices = synthRef.current.getVoices();
-    const targetLang = language === "bn" ? "bn" : "en";
-    const preferredVoice = voices.find(v => {
-      const name = v.name.toLowerCase();
-      const lang = v.lang.toLowerCase();
-      const matchesLang = lang.includes(targetLang);
-      const isFemale = name.includes("female") || name.includes("zira") || name.includes("samantha") || name.includes("susan") || name.includes("hazel") || name.includes("moira") || name.includes("tessa") || name.includes("karen") || name.includes("google") || name.includes("natural") || name.includes("microsoft");
-      return matchesLang && isFemale;
-    }) || voices.find(v => v.lang.toLowerCase().includes(targetLang));
-
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-
-    utterance.onstart = () => {
-      simulateVoiceActivity(true);
-    };
-
-    utterance.onend = () => {
-      simulateVoiceActivity(false);
-      setSarahSpeakingText("");
-      if (callState === "connected" && !isTextMode && !isMuted && recognitionRef.current) {
-        try {
-          recognitionRef.current.start();
-        } catch (err) {
-          // Ignore
-        }
-      }
-    };
-
-    currentUtteranceRef.current = utterance;
-    synthRef.current.speak(utterance);
+    sessionRef.current = await sessionPromise;
   };
 
   const handleTextSubmit = (e: React.FormEvent) => {
@@ -416,7 +455,26 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
     if (!inputText.trim()) return;
     const textToSend = inputText;
     setInputText("");
-    handleUserUtterance(textToSend);
+    
+    // Add user message to UI
+    setMessages(prev => [...prev, {
+      sender: "user",
+      text: textToSend,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }]);
+
+    // Send to live connection session
+    if (sessionRef.current) {
+      sessionRef.current.send({
+        clientContent: {
+          turns: [{
+            role: "user",
+            parts: [{ text: textToSend }]
+          }],
+          turnComplete: true
+        }
+      });
+    }
   };
 
   const getEmotionTheme = () => {
@@ -427,7 +485,7 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
           border: "border-emerald-500/40",
           text: "text-emerald-400",
           bg: "bg-emerald-500/10",
-          title: language === "en" ? "Reassuring Council" : "নিশ্চিন্ত পরামর্শদাতা"
+          title: activeLanguage === "en" ? "Reassuring Council" : "নিশ্চিন্ত পরামর্শদাতা"
         };
       case "analytical elite":
         return {
@@ -435,7 +493,7 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
           border: "border-indigo-500/40",
           text: "text-indigo-400",
           bg: "bg-indigo-500/10",
-          title: language === "en" ? "Financial Advisory" : "আর্থিক বিশ্লেষণ"
+          title: activeLanguage === "en" ? "Financial Advisory" : "আর্থিক বিশ্লেষণ"
         };
       case "empathetic pause":
         return {
@@ -443,16 +501,16 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
           border: "border-pink-500/40",
           text: "text-pink-400",
           bg: "bg-pink-500/10",
-          title: language === "en" ? "Thoughtful Solver" : "সহানুভূতিশীল সমাধান"
+          title: activeLanguage === "en" ? "Thoughtful Solver" : "সহানুভূতিশীল সমাধান"
         };
       case "warm cordial":
       default:
         return {
           glow: "rgba(200, 161, 101, 0.45)",
-          border: "border-[#C8A165]/40",
+          border: "border--[#C8A165]/40",
           text: "text-[#C8A165]",
           bg: "bg-[#C8A165]/10",
-          title: language === "en" ? "VIP Sales Concierge" : "ভিআইপি কনসিয়ার্জ ডিরেক্টর"
+          title: activeLanguage === "en" ? "VIP Sales Concierge" : "ভিআইপি কনসিয়ার্জ ডিরেক্টর"
         };
     }
   };
@@ -474,7 +532,7 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
               startCall();
             }}
             className="w-14 h-14 rounded-full bg-[#141615] border border-[#C8A165]/50 flex items-center justify-center cursor-pointer text-[#C8A165] shadow-2xl hover:text-white hover:border-white transition-all duration-300 animate-pulse-gold relative group"
-            title={language === "en" ? "Call VIP Hotline" : "ভিআইপি হটলাইন কল করুন"}
+            title={activeLanguage === "en" ? "Call VIP Hotline" : "ভিআইপি হটলাইন কল করুন"}
           >
             <Phone className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
             <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
@@ -482,7 +540,7 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
               <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#C8A165]"></span>
             </span>
             <div className="absolute right-16 top-1/2 -translate-y-1/2 bg-neutral-900/90 text-white border border-neutral-850 px-3 py-1 rounded text-[10px] font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
-              {language === "en" ? "Sarah - AI Advisor" : "সারা - এআই অ্যাডভাইজার"}
+              {activeLanguage === "en" ? "Sarah - AI Advisor" : "সারা - এআই অ্যাডভাইজার"}
             </div>
           </motion.button>
         )}
@@ -511,19 +569,30 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
                   </span>
                 </div>
                 <span className="text-[10px] font-mono tracking-widest text-neutral-400 uppercase">
-                  {callState === "connected" ? "SECURED ENCRYPTED CONNECTION" : "VIP SECURE LINE"}
+                  {callState === "connected" ? "SECURED LINE" : "VIP LINE"}
                 </span>
               </div>
-              <button 
-                onClick={() => {
-                  cleanupSpeech();
-                  endCall();
-                  setIsOpen(false);
-                }} 
-                className="text-neutral-500 hover:text-white cursor-pointer transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              
+              <div className="flex items-center gap-2">
+                <select
+                  value={activeLanguage}
+                  onChange={(e) => setActiveLanguage(e.target.value as "en" | "bn")}
+                  className="bg-neutral-950 border border-[#C8A165]/30 text-[#C8A165] text-[9px] font-mono rounded px-1 py-0.5 focus:outline-none focus:border-[#C8A165] cursor-pointer"
+                >
+                  <option value="en">EN</option>
+                  <option value="bn">বাংলা</option>
+                </select>
+                <button 
+                  onClick={() => {
+                    cleanupAudio();
+                    endCall();
+                    setIsOpen(false);
+                  }} 
+                  className="text-neutral-500 hover:text-white cursor-pointer transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-col items-center py-3 text-center z-10 border-b border-neutral-900">
@@ -534,7 +603,7 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
               </div>
               
               <h4 className="text-sm font-serif font-bold text-white tracking-wide leading-none">
-                {language === "en" ? "Sarah" : "সারা"}
+                {activeLanguage === "en" ? "Sarah" : "সারা"}
               </h4>
               <p className="text-[9px] font-mono uppercase tracking-widest text-[#C8A165] mt-1.5 leading-none">
                 {theme.title}
@@ -561,7 +630,7 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
                 <div className="flex flex-col items-center justify-center h-full text-center text-neutral-500 gap-1.5 p-4">
                   <AlertCircle className="w-4 h-4 text-neutral-600" />
                   <p className="text-[10px] font-mono leading-relaxed">
-                    {language === "en" ? "Establishing satellite connection..." : "স্যাটেলাইট সংযোগ স্থাপন করা হচ্ছে..."}
+                    {activeLanguage === "en" ? "Establishing satellite connection..." : "স্যাটেলাইট সংযোগ স্থাপন করা হচ্ছে..."}
                   </p>
                 </div>
               )}
@@ -571,7 +640,7 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
                   className={`flex flex-col max-w-[85%] ${msg.sender === "user" ? "self-end items-end" : "self-start items-start"}`}
                 >
                   <span className="text-[8px] font-mono text-neutral-500 uppercase tracking-tighter mb-0.5 leading-none">
-                    {msg.sender === "user" ? (language === "en" ? "You" : "আপনি") : "Sarah"} • {msg.timestamp}
+                    {msg.sender === "user" ? (activeLanguage === "en" ? "You" : "আপনি") : "Sarah"} • {msg.timestamp}
                   </span>
                   <div className={`px-2.5 py-1.5 rounded-xl text-[10.5px] leading-relaxed shadow-sm font-sans ${
                     msg.sender === "user" 
@@ -586,8 +655,11 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
               {sarahSpeakingText && (
                 <div className="flex flex-col max-w-[85%] self-start items-start">
                   <span className="text-[8px] font-mono text-[#C8A165] uppercase tracking-wider animate-pulse mb-0.5 leading-none">
-                    {language === "en" ? "SARAH IS RESPONDING..." : "সারা উত্তর দিচ্ছেন..."}
+                    {activeLanguage === "en" ? "SARAH IS RESPONDING..." : "সারা উত্তর দিচ্ছেন..."}
                   </span>
+                  <div className="px-2.5 py-1.5 rounded-xl text-[10.5px] leading-relaxed shadow-sm font-sans bg-[#181918] text-neutral-200 border border-[#C8A165]/10 rounded-tl-none">
+                    {sarahSpeakingText}
+                  </div>
                 </div>
               )}
               <div ref={chatEndRef} />
@@ -619,7 +691,7 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
                     type="text"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
-                    placeholder={language === "en" ? "Ask Sarah something..." : "সারাকে কিছু জিজ্ঞাসা করুন..."}
+                    placeholder={activeLanguage === "en" ? "Ask Sarah something..." : "সারাকে কিছু জিজ্ঞাসা করুন..."}
                     className="flex-1 bg-neutral-900 border border-neutral-800 hover:border-neutral-700 focus:border-[#C8A165] outline-none text-xs px-3 py-2 rounded-xl text-white transition-all font-sans"
                   />
                   <button 
@@ -635,7 +707,8 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
                 {callState === "connected" && (
                   <button
                     onClick={() => {
-                      cleanupSpeech();
+                      stopAllActiveSources();
+                      setSarahSpeakingText("");
                       setIsTextMode(!isTextMode);
                     }}
                     className="text-[10px] font-mono tracking-widest text-neutral-400 hover:text-[#C8A165] cursor-pointer flex items-center gap-1.5 transition-colors uppercase"
@@ -650,13 +723,6 @@ export default function AIVoiceConcierge({ language }: AIVoiceConciergeProps) {
                   <button
                     onClick={() => {
                       setIsMuted(!isMuted);
-                      if (!isMuted) {
-                        cleanupSpeech();
-                      } else {
-                        if (recognitionRef.current) {
-                          try { recognitionRef.current.start(); } catch(e){}
-                        }
-                      }
                     }}
                     className={`text-[10px] font-mono tracking-widest cursor-pointer flex items-center gap-1.5 transition-colors uppercase ${
                       isMuted ? "text-red-500 hover:text-red-400" : "text-neutral-400 hover:text-white"

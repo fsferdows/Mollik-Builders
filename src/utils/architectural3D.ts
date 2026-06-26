@@ -11,33 +11,40 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
   const heightVal = currentProj.specs?.find(s => s.label === "Building Height")?.value || "G + 9 Floors";
   const parsedKatha = parseInt(landAreaVal.replace(/[^0-9]/g, '')) || 10;
   const parsedStoreys = parseInt(heightVal.replace(/[^0-9]/g, '')) || 10;
+  const totalStoreys = heightVal.toLowerCase().includes("g +") ? (parsedStoreys + 1) : parsedStoreys;
 
-  // Custom colors and styling based on project ID
-  let colColor = "0x475569";
-  let frontFlatsColor = "0xb58e2d";
-  let rearFlatsColor = "0x7c3aed";
-  let glassCurtainColor = "0x0ea5e9";
-  let louversColor = "0x1e293b";
+  // Custom colors and styling based on project ID - Enhanced Luxury Palette
+  let colColor = "0x4b5563"; // Steel grey
+  let frontFlatsColor = "0xc8a165"; // Champagne Gold
+  let rearFlatsColor = "0x334155"; // Slate Slate
+  let glassCurtainColor = "0xbae6fd"; // Crystal Cyan
+  let louversColor = "0x475569"; // Bronze Slate
   let oasisTurfColor = "0x059669";
-  let slabGroundColor = "0x111625";
-  let slabExecutiveColor = "0x1e293b";
-  let slabPanoramicColor = "0x3d301b";
-  let slabPenthouseColor = "0x5c4c23";
+  let slabGroundColor = "0x0f172a"; // Dark slate
+  let slabExecutiveColor = "0x1e293b"; // Obsidian
+  let slabPanoramicColor = "0x2e3b4e"; // Panoramic deep blue
+  let slabPenthouseColor = "0x451a03"; // Rooftop deck bronze/brown
   
   if (currentProj.id === "mollik-tower") {
-    colColor = "0x475569";
-    frontFlatsColor = "0xd4af37";
-    rearFlatsColor = "0x4c1d95";
+    colColor = "0x4b5563";
+    frontFlatsColor = "0xc8a165"; // Beautiful bronze-champagne
+    rearFlatsColor = "0x2d3748"; // Obsidian graphite
+    glassCurtainColor = "0xa5f3fc"; // Soft translucent cyan
+    louversColor = "0x475569";
+    slabGroundColor = "0x0f172a";
+    slabExecutiveColor = "0x1e293b";
+    slabPanoramicColor = "0x232d3d";
+    slabPenthouseColor = "0x3d2a1b";
   } else if (currentProj.id === "mollik-heights") {
     colColor = "0x1e293b";
     frontFlatsColor = "0x3b82f6";
     rearFlatsColor = "0x64748b";
-    glassCurtainColor = "0x0284c7";
+    glassCurtainColor = "0xbae6fd";
   } else if (currentProj.id === "mollik-garden") {
     colColor = "0x0f172a";
     frontFlatsColor = "0x10b981";
     rearFlatsColor = "0x059669";
-    glassCurtainColor = "0x0d9488";
+    glassCurtainColor = "0xbae6fd";
     oasisTurfColor = "0x047857";
     slabExecutiveColor = "0x064e3b";
     slabPanoramicColor = "0x022c22";
@@ -637,14 +644,19 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
     sunLight.castShadow = !isMobile;
     sunLight.shadow.bias = -0.0003;
     if (!isMobile) {
-      sunLight.shadow.mapSize.width = 1024;
-      sunLight.shadow.mapSize.height = 1024;
+      sunLight.shadow.mapSize.width = 2048; // Boost shadow resolution for professional desktop sharpness
+      sunLight.shadow.mapSize.height = 2048;
     }
     scene.add(sunLight);
 
     const rimSkyLight = new THREE.DirectionalLight(0x38bdf8, 0.5);
     rimSkyLight.position.set(-45, 30, -35);
     scene.add(rimSkyLight);
+
+    // Upward-pointing soft ground-bounce fill light for rich ambient details (GI simulation)
+    const groundBounceLight = new THREE.DirectionalLight(0xffeedd, 0.3);
+    groundBounceLight.position.set(0, -50, 0);
+    scene.add(groundBounceLight);
 
     // Ground Plot base
     const siteGeo = new THREE.PlaneGeometry(240, 240);
@@ -732,6 +744,181 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
       return dimGroup;
     }
 
+    // Helper function to build detailed inside rooms (partition walls + basic furniture + room labels)
+    function createFlatInteriors(unitX, unitY, unitZ, isFront, floorIndex) {
+      const interiorGroup = new THREE.Group();
+      interiorGroup.position.set(unitX, unitY, unitZ);
+
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.7, metalness: 0.1 });
+      const furMat = new THREE.MeshStandardMaterial({ color: 0xc27a3d, roughness: 0.8, metalness: 0.1 });
+      const wallH = floorHeight - 0.2;
+      const wallThick = 0.15;
+
+      if (isFront) {
+        // Front units: width=12.5, depth=13
+        // Wall 1: Left vertical partition at x = -2.0, z from -6.5 to 6.5
+        const wall1Geo = new THREE.BoxGeometry(wallThick, wallH, 13);
+        const wall1 = new THREE.Mesh(wall1Geo, wallMat);
+        wall1.position.set(-2.0, wallH / 2, 0);
+        interiorGroup.add(wall1);
+
+        // Wall 2: Right vertical partition at x = 2.0, z from -6.5 to 6.5
+        const wall2Geo = new THREE.BoxGeometry(wallThick, wallH, 13);
+        const wall2 = new THREE.Mesh(wall2Geo, wallMat);
+        wall2.position.set(2.0, wallH / 2, 0);
+        interiorGroup.add(wall2);
+
+        // Wall 3: Horizontal mid partition at z = 0, x from -6.25 to 6.25
+        const wall3Geo = new THREE.BoxGeometry(12.5, wallH, wallThick);
+        const wall3 = new THREE.Mesh(wall3Geo, wallMat);
+        wall3.position.set(0, wallH / 2, 0);
+        interiorGroup.add(wall3);
+
+        // Wall 4: Bath partition at z = -3.0, x from 2.0 to 6.25
+        const wall4Geo = new THREE.BoxGeometry(4.25, wallH, wallThick);
+        const wall4 = new THREE.Mesh(wall4Geo, wallMat);
+        wall4.position.set(4.125, wallH / 2, -3.0);
+        interiorGroup.add(wall4);
+
+        // Furniture Blocks
+        // Master Bed double bed
+        const bed1 = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.5, 2.0), furMat);
+        bed1.position.set(-4.2, 0.25, 3.25);
+        interiorGroup.add(bed1);
+
+        // Bed 2 double bed
+        const bed2 = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.5, 2.0), furMat);
+        bed2.position.set(4.2, 0.25, 3.25);
+        interiorGroup.add(bed2);
+
+        // Sofa in Living Room
+        const sofa = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.4, 0.8), furMat);
+        sofa.position.set(0, 0.2, 3.25);
+        interiorGroup.add(sofa);
+
+        // Dining Table
+        const table = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.7, 1.0), furMat);
+        table.position.set(0, 0.35, -3.25);
+        interiorGroup.add(table);
+
+        // Kitchen Counter
+        const counter = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.8, 2.5), furMat);
+        counter.position.set(-5.0, 0.4, -3.25);
+        interiorGroup.add(counter);
+
+        // Room labels
+        const lblMB = createTextSprite("M. BED", "#cbd5e1", "rgba(15, 23, 42, 0.7)");
+        lblMB.position.set(-4.2, 1.2, 2.0);
+        lblMB.scale.set(3.5, 0.9, 1);
+
+        const lblB2 = createTextSprite("BED 2", "#cbd5e1", "rgba(15, 23, 42, 0.7)");
+        lblB2.position.set(4.2, 1.2, 2.0);
+        lblB2.scale.set(3.5, 0.9, 1);
+
+        const lblLiv = createTextSprite("LIVING", "#d4af37", "rgba(15, 23, 42, 0.7)");
+        lblLiv.position.set(0, 1.2, 1.5);
+        lblLiv.scale.set(3.5, 0.9, 1);
+
+        const lblDin = createTextSprite("DINING", "#cbd5e1", "rgba(15, 23, 42, 0.7)");
+        lblDin.position.set(0, 1.2, -1.5);
+        lblDin.scale.set(3.5, 0.9, 1);
+
+        const lblKit = createTextSprite("KITCHEN", "#cbd5e1", "rgba(15, 23, 42, 0.7)");
+        lblKit.position.set(-4.2, 1.2, -1.5);
+        lblKit.scale.set(3.5, 0.9, 1);
+
+        interiorGroup.add(lblMB, lblB2, lblLiv, lblDin, lblKit);
+
+      } else {
+        // Rear units: width=12.5, depth=11
+        // Wall 1: Left vertical partition at x = -2.0, z from -5.5 to 5.5
+        const wall1Geo = new THREE.BoxGeometry(wallThick, wallH, 11);
+        const wall1 = new THREE.Mesh(wall1Geo, wallMat);
+        wall1.position.set(-2.0, wallH / 2, 0);
+        interiorGroup.add(wall1);
+
+        // Wall 2: Right vertical partition at x = 2.0, z from -5.5 to 5.5
+        const wall2Geo = new THREE.BoxGeometry(wallThick, wallH, 11);
+        const wall2 = new THREE.Mesh(wall2Geo, wallMat);
+        wall2.position.set(2.0, wallH / 2, 0);
+        interiorGroup.add(wall2);
+
+        // Wall 3: Horizontal mid partition at z = 0, x from -6.25 to 6.25
+        const wall3Geo = new THREE.BoxGeometry(12.5, wallH, wallThick);
+        const wall3 = new THREE.Mesh(wall3Geo, wallMat);
+        wall3.position.set(0, wallH / 2, 0);
+        interiorGroup.add(wall3);
+
+        // Wall 4: Bath partition at z = -2.5, x from 2.0 to 6.25
+        const wall4Geo = new THREE.BoxGeometry(4.25, wallH, wallThick);
+        const wall4 = new THREE.Mesh(wall4Geo, wallMat);
+        wall4.position.set(4.125, wallH / 2, -2.5);
+        interiorGroup.add(wall4);
+
+        // Furniture
+        // Master Bed double bed
+        const bed1 = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.5, 2.0), furMat);
+        bed1.position.set(-4.2, 0.25, 2.75);
+        interiorGroup.add(bed1);
+
+        // Bed 2 double bed
+        const bed2 = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.5, 2.0), furMat);
+        bed2.position.set(4.2, 0.25, 2.75);
+        interiorGroup.add(bed2);
+
+        // Sofa in Living Room
+        const sofa = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.4, 0.8), furMat);
+        sofa.position.set(0, 0.2, 2.75);
+        interiorGroup.add(sofa);
+
+        // Dining Table
+        const table = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.7, 0.9), furMat);
+        table.position.set(0, 0.35, -2.5);
+        interiorGroup.add(table);
+
+        // Kitchen Counter
+        const counter = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.8, 2.0), furMat);
+        counter.position.set(-5.0, 0.4, -2.75);
+        interiorGroup.add(counter);
+
+        // Room labels
+        const lblMB = createTextSprite("M. BED", "#cbd5e1", "rgba(15, 23, 42, 0.7)");
+        lblMB.position.set(-4.2, 1.2, 1.5);
+        lblMB.scale.set(3.5, 0.9, 1);
+
+        const lblB2 = createTextSprite("BED 2", "#cbd5e1", "rgba(15, 23, 42, 0.7)");
+        lblB2.position.set(4.2, 1.2, 1.5);
+        lblB2.scale.set(3.5, 0.9, 1);
+
+        const lblLiv = createTextSprite("LIVING", "#d4af37", "rgba(15, 23, 42, 0.7)");
+        lblLiv.position.set(0, 1.2, 1.25);
+        lblLiv.scale.set(3.5, 0.9, 1);
+
+        const lblDin = createTextSprite("DINING", "#cbd5e1", "rgba(15, 23, 42, 0.7)");
+        lblDin.position.set(0, 1.2, -1.25);
+        lblDin.scale.set(3.5, 0.9, 1);
+
+        const lblKit = createTextSprite("KITCHEN", "#cbd5e1", "rgba(15, 23, 42, 0.7)");
+        lblKit.position.set(-4.2, 1.2, -1.25);
+        lblKit.scale.set(3.5, 0.9, 1);
+
+        interiorGroup.add(lblMB, lblB2, lblLiv, lblDin, lblKit);
+      }
+
+      // Tag all meshes and sprites inside this room block with the correct floorIndex
+      interiorGroup.traverse((child) => {
+        if (child.isMesh || child.isSprite) {
+          child.userData = { floorIndex: floorIndex };
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        }
+      });
+
+      return interiorGroup;
+    }
+
     // Set dynamic layers
     const structuralBaseGroup = new THREE.Group();
     const columnsGroup = new THREE.Group();
@@ -743,23 +930,24 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
 
     // Materials definitions with authentic architectural texture looks
     const matSetbacks = new THREE.MeshStandardMaterial({ color: 0xd4af37, transparent: true, opacity: 0.12, wireframe: true });
-    const matColumns = new THREE.MeshStandardMaterial({ color: ${colColor}, roughness: 0.5, metalness: 0.4, transparent: true, opacity: 1.0 });
-    const matCoreArea = new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.5, metalness: 0.1, transparent: true, opacity: 1.0 });
-    const matFrontFlats = new THREE.MeshStandardMaterial({ color: ${frontFlatsColor}, transparent: true, opacity: 0.75, roughness: 0.3 }); // Unit A/B Golden
-    const matRearFlats = new THREE.MeshStandardMaterial({ color: ${rearFlatsColor}, transparent: true, opacity: 0.75, roughness: 0.3 }); // Unit C/D Purple
-    const matGlassCurtain = new THREE.MeshStandardMaterial({ color: ${glassCurtainColor}, transparent: true, opacity: 0.45, roughness: 0.05, metalness: 0.9 });
-    const matLouvers = new THREE.MeshStandardMaterial({ color: ${louversColor}, roughness: 0.6, transparent: true, opacity: 1.0 });
+    const matColumns = new THREE.MeshStandardMaterial({ color: ${colColor}, roughness: 0.25, metalness: 0.8, transparent: true, opacity: 1.0 });
+    const matCoreArea = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.7, transparent: true, opacity: 1.0 });
+    const matFrontFlats = new THREE.MeshStandardMaterial({ color: ${frontFlatsColor}, transparent: true, opacity: 0.22, roughness: 0.2, metalness: 0.8 }); // Unit A/B Translucent Glass
+    const matRearFlats = new THREE.MeshStandardMaterial({ color: ${rearFlatsColor}, transparent: true, opacity: 0.22, roughness: 0.3, metalness: 0.6 }); // Unit C/D Translucent Glass
+    const matGlassCurtain = new THREE.MeshStandardMaterial({ color: ${glassCurtainColor}, transparent: true, opacity: 0.55, roughness: 0.05, metalness: 0.95 });
+    const matLouvers = new THREE.MeshStandardMaterial({ color: ${louversColor}, roughness: 0.3, metalness: 0.8, transparent: true, opacity: 1.0 });
     const matOasisTurf = new THREE.MeshStandardMaterial({ color: ${oasisTurfColor}, roughness: 0.9, transparent: true, opacity: 1.0 });
     const matSetbackDanger = new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.15 });
 
     // 4 Distinct Slab types/materials to color-code vertical tiers of the G+9 tower (Clearly Visible & Understandable)
-    const matSlabGround = new THREE.MeshStandardMaterial({ color: ${slabGroundColor}, roughness: 0.95, transparent: true, opacity: 1.0 }); // Ground Floor Asphalt & Pavers
-    const matSlabExecutive = new THREE.MeshStandardMaterial({ color: ${slabExecutiveColor}, roughness: 0.70, transparent: true, opacity: 1.0 }); // Levels 1 to 3 Executive
-    const matSlabPanoramic = new THREE.MeshStandardMaterial({ color: ${slabPanoramicColor}, roughness: 0.50, transparent: true, opacity: 1.0 }); // Levels 4 to 7 Panoramic (Crema Beige look)
-    const matSlabPenthouse = new THREE.MeshStandardMaterial({ color: ${slabPenthouseColor}, roughness: 0.30, metalness: 0.1, transparent: true, opacity: 1.0 }); // Levels 8 to 9 Penthouse (White & Gold)
+    const matSlabGround = new THREE.MeshStandardMaterial({ color: ${slabGroundColor}, roughness: 0.9, metalness: 0.1, transparent: true, opacity: 1.0 }); // Ground Floor Asphalt & Pavers
+    const matSlabExecutive = new THREE.MeshStandardMaterial({ color: ${slabExecutiveColor}, roughness: 0.60, metalness: 0.2, transparent: true, opacity: 1.0 }); // Levels 1 to 3 Executive
+    const matSlabPanoramic = new THREE.MeshStandardMaterial({ color: ${slabPanoramicColor}, roughness: 0.45, metalness: 0.3, transparent: true, opacity: 1.0 }); // Levels 4 to 7 Panoramic (Crema Beige look)
+    const matSlabPenthouse = new THREE.MeshStandardMaterial({ color: ${slabPenthouseColor}, roughness: 0.25, metalness: 0.4, transparent: true, opacity: 1.0 }); // Levels 8 to 9 Penthouse (White & Gold)
 
     const floorHeight = 3.2; 
-    const totalStoreys = 10;
+    const totalStoreys = ${totalStoreys};
+    const roofLevelY = totalStoreys * floorHeight;
 
     // 1. Plot Outlines & Setbacks (Ground)
     const wireframeGeo = new THREE.BoxGeometry(36, floorHeight * totalStoreys, 34);
@@ -822,14 +1010,17 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
       [-12, 14],  [-4, 14],  [4, 14],  [12, 14]
     ];
 
+    const tierMid = Math.floor(totalStoreys * 0.3);
+    const tierHigh = Math.floor(totalStoreys * 0.7);
+
     for (let tier = 0; tier < totalStoreys; tier++) {
       const currentY = tier * floorHeight;
 
       // Structural Column Tapering logic
       let colWidth = 1.3;
       let colDepth = 0.9;
-      if (tier >= 4 && tier <= 6) { colWidth = 1.0; colDepth = 0.7; }
-      else if (tier >= 7) { colWidth = 0.8; colDepth = 0.5; }
+      if (tier >= tierMid && tier < tierHigh) { colWidth = 1.0; colDepth = 0.7; }
+      else if (tier >= tierHigh) { colWidth = 0.8; colDepth = 0.5; }
 
       columnBaseGrid.forEach((coord, idx) => {
         const colGeo = new THREE.BoxGeometry(colWidth, floorHeight - 0.02, colDepth);
@@ -840,8 +1031,20 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
         colMesh.userData = { floorIndex: tier };
         columnsGroup.add(colMesh);
 
+        // High-fidelity column edge outline
+        const colEdges = new THREE.EdgesGeometry(colGeo);
+        const colLineMat = new THREE.LineBasicMaterial({ 
+          color: 0xffffff, 
+          transparent: true, 
+          opacity: 0.15 
+        });
+        const colLine = new THREE.LineSegments(colEdges, colLineMat);
+        colLine.position.copy(colMesh.position);
+        colLine.userData = { floorIndex: tier };
+        columnsGroup.add(colLine);
+
         // Label pillar size dynamically on a few columns in step 2
-        if (idx === 7 && (tier === 1 || tier === 5 || tier === 8)) {
+        if (idx === 7 && (tier === 1 || tier === Math.floor(totalStoreys / 2) || tier === totalStoreys - 2)) {
           let labelStr = "Pillar: " + colWidth + "m x " + colDepth + "m";
           const colLabel = createTextSprite(labelStr, "#cbd5e1", "rgba(15, 23, 42, 0.85)");
           colLabel.position.set(coord[0], currentY + floorHeight, coord[1] + 1.2);
@@ -859,11 +1062,25 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
         foyerMesh.userData = { floorIndex: tier };
         columnsGroup.add(foyerMesh);
 
+        const foyerEdges = new THREE.EdgesGeometry(foyerGeo);
+        const foyerLineMat = new THREE.LineBasicMaterial({ color: 0x0ea5e9, transparent: true, opacity: 0.25 });
+        const foyerLine = new THREE.LineSegments(foyerEdges, foyerLineMat);
+        foyerLine.position.copy(foyerMesh.position);
+        foyerLine.userData = { floorIndex: tier };
+        columnsGroup.add(foyerLine);
+
         const mechWingGeo = new THREE.BoxGeometry(32, floorHeight, 6);
         const mechWing = new THREE.Mesh(mechWingGeo, matLouvers);
         mechWing.position.set(0, currentY + floorHeight / 2, -13);
         mechWing.userData = { floorIndex: tier };
         columnsGroup.add(mechWing);
+
+        const mechEdges = new THREE.EdgesGeometry(mechWingGeo);
+        const mechLineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.2 });
+        const mechLine = new THREE.LineSegments(mechEdges, mechLineMat);
+        mechLine.position.copy(mechWing.position);
+        mechLine.userData = { floorIndex: tier };
+        columnsGroup.add(mechLine);
       } else {
         // Elevator & Core Shaft blocks (Circulation Core)
         const coreBoxGeo = new THREE.BoxGeometry(7, floorHeight - 0.02, 10);
@@ -873,6 +1090,13 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
         coreBoxMesh.userData = { floorIndex: tier };
         coreGroup.add(coreBoxMesh);
 
+        const coreEdges = new THREE.EdgesGeometry(coreBoxGeo);
+        const coreLineMat = new THREE.LineBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.25 });
+        const coreLine = new THREE.LineSegments(coreEdges, coreLineMat);
+        coreLine.position.copy(coreBoxMesh.position);
+        coreLine.userData = { floorIndex: tier };
+        coreGroup.add(coreLine);
+
         // Unit A & B (SW/SE facing - Amber style)
         const unitAGeo = new THREE.BoxGeometry(12.5, floorHeight - 0.1, 13);
         const unitAMesh = new THREE.Mesh(unitAGeo, matFrontFlats);
@@ -881,10 +1105,22 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
         unitAMesh.userData = { floorIndex: tier };
         flatsGroup.add(unitAMesh);
 
+        const unitAEdges = new THREE.EdgesGeometry(unitAGeo);
+        const unitALineMat = new THREE.LineBasicMaterial({ color: 0xd4af37, transparent: true, opacity: 0.25 });
+        const unitALine = new THREE.LineSegments(unitAEdges, unitALineMat);
+        unitALine.position.copy(unitAMesh.position);
+        unitALine.userData = { floorIndex: tier };
+        flatsGroup.add(unitALine);
+
         const unitBMesh = unitAMesh.clone();
         unitBMesh.position.x = 10.2;
         unitBMesh.userData = { floorIndex: tier };
         flatsGroup.add(unitBMesh);
+
+        const unitBLine = new THREE.LineSegments(unitAEdges, unitALineMat);
+        unitBLine.position.copy(unitBMesh.position);
+        unitBLine.userData = { floorIndex: tier };
+        flatsGroup.add(unitBLine);
 
         // balconies & louvers representation
         const frontRailGeo = new THREE.BoxGeometry(32.8, floorHeight - 0.8, 0.1);
@@ -901,10 +1137,22 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
         unitCMesh.userData = { floorIndex: tier };
         flatsGroup.add(unitCMesh);
 
+        const unitCEdges = new THREE.EdgesGeometry(unitCGeo);
+        const unitCLineMat = new THREE.LineBasicMaterial({ color: 0xa855f7, transparent: true, opacity: 0.2 });
+        const unitCLine = new THREE.LineSegments(unitCEdges, unitCLineMat);
+        unitCLine.position.copy(unitCMesh.position);
+        unitCLine.userData = { floorIndex: tier };
+        flatsGroup.add(unitCLine);
+
         const unitDMesh = unitCMesh.clone();
         unitDMesh.position.x = 10.2;
         unitDMesh.userData = { floorIndex: tier };
         flatsGroup.add(unitDMesh);
+
+        const unitDLine = new THREE.LineSegments(unitCEdges, unitCLineMat);
+        unitDLine.position.copy(unitDMesh.position);
+        unitDLine.userData = { floorIndex: tier };
+        flatsGroup.add(unitDLine);
 
         // Aesthetic Louvers
         const slatGeo = new THREE.BoxGeometry(0.1, floorHeight - 0.1, 5);
@@ -915,14 +1163,21 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
         lRight.position.x = 16.6;
         lRight.userData = { floorIndex: tier };
         flatsGroup.add(lLeft, lRight);
+
+        // Instantiate detailed 3D inside room layouts and furniture
+        const intA = createFlatInteriors(-10.2, currentY, 9.5, true, tier);
+        const intB = createFlatInteriors(10.2, currentY, 9.5, true, tier);
+        const intC = createFlatInteriors(-10.2, currentY, -10.5, false, tier);
+        const intD = createFlatInteriors(10.2, currentY, -10.5, false, tier);
+        flatsGroup.add(intA, intB, intC, intD);
       }
 
       // 4-Layers Color-coded vertical tiers of floor slabs
       let slabMat = matSlabExecutive;
       if (tier === 0) slabMat = matSlabGround;
-      else if (tier >= 1 && tier <= 3) slabMat = matSlabExecutive;
-      else if (tier >= 4 && tier <= 7) slabMat = matSlabPanoramic;
-      else if (tier >= 8) slabMat = matSlabPenthouse;
+      else if (tier >= 1 && tier < tierMid) slabMat = matSlabExecutive;
+      else if (tier >= tierMid && tier < tierHigh) slabMat = matSlabPanoramic;
+      else slabMat = matSlabPenthouse;
 
       const floorSlabGeo = new THREE.BoxGeometry(33.8, 0.12, 31.8);
       const slabMesh = new THREE.Mesh(floorSlabGeo, slabMat);
@@ -930,6 +1185,18 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
       slabMesh.receiveShadow = true;
       slabMesh.userData = { floorIndex: tier };
       completeBuildingGroup.add(slabMesh);
+
+      // High-fidelity slab edge outline
+      const slabEdges = new THREE.EdgesGeometry(floorSlabGeo);
+      const slabLineMat = new THREE.LineBasicMaterial({ 
+        color: 0xd4af37, 
+        transparent: true, 
+        opacity: 0.2 
+      });
+      const slabLine = new THREE.LineSegments(slabEdges, slabLineMat);
+      slabLine.position.copy(slabMesh.position);
+      slabLine.userData = { floorIndex: tier };
+      completeBuildingGroup.add(slabLine);
     }
 
     // Active flowing lift simulation inside Core Group
@@ -946,34 +1213,35 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
 
     // Anchored Sprites for elevators core
     const coreMetricsSprite = createTextSprite("CIRCULATION CORE: DUAL EXPRESS TRACTION LIFT", "#2563eb");
-    coreMetricsSprite.position.set(0, 36, 6);
+    coreMetricsSprite.position.set(0, roofLevelY + 4, 6);
     coreGroup.add(coreMetricsSprite);
 
     // Dimensions lines inside Central core
-    const liftCoreArrow = createDimensionLine(new THREE.Vector3(-3.5, 33, 5), new THREE.Vector3(3.5, 33, 5), 0x2563eb);
+    const liftCoreArrow = createDimensionLine(new THREE.Vector3(-3.5, roofLevelY + 1, 5), new THREE.Vector3(3.5, roofLevelY + 1, 5), 0x2563eb);
     coreGroup.add(liftCoreArrow);
 
     // Tapering Columns grid description labels
     const taperingLabel = createTextSprite("BNBC CODES: COLUMN MATRIX TAPERING (1.3m to 0.8m)", "#38bdf8");
-    taperingLabel.position.set(0, 35, -16);
+    taperingLabel.position.set(0, roofLevelY + 3, -16);
     columnsGroup.add(taperingLabel);
 
 
     // 4. Typical Floor Splits and specifications
+    const midBuildingHeightY = (totalStoreys * floorHeight) / 2;
     const splitTagA = createTextSprite("UNIT A (SW): 920 SQ FT | 3 BEDROOMS", "#d4af37");
-    splitTagA.position.set(-16, 22, 17);
+    splitTagA.position.set(-16, midBuildingHeightY, 17);
     flatsGroup.add(splitTagA);
 
     const splitTagB = createTextSprite("UNIT B (SE): 920 SQ FT | 3 BEDROOMS", "#d4af37");
-    splitTagB.position.set(16, 22, 17);
+    splitTagB.position.set(16, midBuildingHeightY, 17);
     flatsGroup.add(splitTagB);
 
     const splitTagC = createTextSprite("UNIT C (NW): 880 SQ FT | 3 BEDROOMS", "#a855f7");
-    splitTagC.position.set(-16, 22, -17);
+    splitTagC.position.set(-16, midBuildingHeightY, -17);
     flatsGroup.add(splitTagC);
 
     const splitTagD = createTextSprite("UNIT D (NE): 880 SQ FT | 3 BEDROOMS", "#a855f7");
-    splitTagD.position.set(16, 22, -17);
+    splitTagD.position.set(16, midBuildingHeightY, -17);
     flatsGroup.add(splitTagD);
 
     // 5. G-Floor Parking specifications & car lots representation
@@ -1068,13 +1336,21 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
 
 
     // 6. Rooftop Sanctuary Elements
-    const roofLevelY = totalStoreys * floorHeight;
+    // roofLevelY is declared above
     
     const oasisTurfGeo = new THREE.BoxGeometry(33.2, 0.1, 31.2);
     const oasisTurf = new THREE.Mesh(oasisTurfGeo, matOasisTurf);
     oasisTurf.position.set(0, roofLevelY + 0.05, 0);
-    oasisTurf.userData = { floorIndex: 10 };
+    oasisTurf.userData = { floorIndex: totalStoreys };
     roofGroup.add(oasisTurf);
+
+    // High-fidelity outline for oasisTurf
+    const turfEdges = new THREE.EdgesGeometry(oasisTurfGeo);
+    const turfLineMat = new THREE.LineBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0.2 });
+    const turfLine = new THREE.LineSegments(turfEdges, turfLineMat);
+    turfLine.position.copy(oasisTurf.position);
+    turfLine.userData = { floorIndex: totalStoreys };
+    roofGroup.add(turfLine);
 
     // Shimmering Rooftop Infinity Splash Pool
     const poolWaterGeo = new THREE.BoxGeometry(10, 0.1, 7.5);
@@ -1087,7 +1363,7 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
     });
     const poolWater = new THREE.Mesh(poolWaterGeo, poolWaterMat);
     poolWater.position.set(-9.5, roofLevelY + 0.12, 5.5);
-    poolWater.userData = { floorIndex: 10 };
+    poolWater.userData = { floorIndex: totalStoreys };
     roofGroup.add(poolWater);
     
     // Pool stone border
@@ -1095,13 +1371,13 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
     const poolBorderMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.85 });
     const poolBorder = new THREE.Mesh(poolBorderGeo, poolBorderMat);
     poolBorder.position.set(-9.5, roofLevelY + 0.09, 5.5);
-    poolBorder.userData = { floorIndex: 10 };
+    poolBorder.userData = { floorIndex: totalStoreys };
     roofGroup.add(poolBorder);
     
     const poolLabel = createTextSprite("ROOFTOP POOL & INFINITY DECK", "#38bdf8", "rgba(8, 11, 22, 0.9)");
     poolLabel.position.set(-9.5, roofLevelY + 2.0, 5.5);
     poolLabel.scale.set(6, 1.4, 1);
-    poolLabel.userData = { floorIndex: 10 };
+    poolLabel.userData = { floorIndex: totalStoreys };
     roofGroup.add(poolLabel);
 
     // Beautiful pergola structure with beams
@@ -1109,14 +1385,14 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
     const pergolaMesh = new THREE.Mesh(pergolaStructuralGeo, matLouvers);
     pergolaMesh.position.set(0, roofLevelY + 1.4, 0);
     pergolaMesh.castShadow = true;
-    pergolaMesh.userData = { floorIndex: 10 };
+    pergolaMesh.userData = { floorIndex: totalStoreys };
     roofGroup.add(pergolaMesh);
 
     // Glass Balustrades
     const safetyGlassGeo = new THREE.BoxGeometry(33, 1.2, 31);
     const safetyGlass = new THREE.Mesh(safetyGlassGeo, matGlassCurtain);
     safetyGlass.position.set(0, roofLevelY + 0.6, 0);
-    safetyGlass.userData = { floorIndex: 10 };
+    safetyGlass.userData = { floorIndex: totalStoreys };
     roofGroup.add(safetyGlass);
 
     // Solar panels representations (Active sustainable energy grid)
@@ -1126,18 +1402,18 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
       const panel = new THREE.Mesh(panelGeo, panelMat);
       panel.position.set(-10 + (s * 6.5), roofLevelY + 0.2, -10);
       panel.rotation.x = -0.3; // Tilt solar panels
-      panel.userData = { floorIndex: 10 };
+      panel.userData = { floorIndex: totalStoreys };
       roofGroup.add(panel);
     }
 
     const roofSustainSprite = createTextSprite("15KW INTEGRATED SOLAR ARRAY - COMPLIANCE", "#10b981");
     roofSustainSprite.position.set(0, roofLevelY + 3.5, -10);
-    roofSustainSprite.userData = { floorIndex: 10 };
+    roofSustainSprite.userData = { floorIndex: totalStoreys };
     roofGroup.add(roofSustainSprite);
 
     const roofOasisSprite = createTextSprite("COMMUNITY ROOFTOP GARDEN OASIS", "#34d399");
     roofOasisSprite.position.set(0, roofLevelY + 4, 3);
-    roofOasisSprite.userData = { floorIndex: 10 };
+    roofOasisSprite.userData = { floorIndex: totalStoreys };
     roofGroup.add(roofOasisSprite);
 
 
@@ -1417,9 +1693,9 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
       } else {
         matFrontFlats.wireframe = false;
         matRearFlats.wireframe = false;
-        matFrontFlats.opacity = 0.75;
+        matFrontFlats.opacity = 0.22;
         matFrontFlats.color.setHex(0xb58e2d);
-        matRearFlats.opacity = 0.75;
+        matRearFlats.opacity = 0.22;
         matRearFlats.color.setHex(0x7c3aed);
         
         matSlabGround.wireframe = false;
@@ -1472,8 +1748,8 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
       // Reset all opacities first to fully solid
       matColumns.opacity = 1.0;
       matCoreArea.opacity = 1.0;
-      matFrontFlats.opacity = 0.75;
-      matRearFlats.opacity = 0.75;
+      matFrontFlats.opacity = 0.22;
+      matRearFlats.opacity = 0.22;
       matLouvers.opacity = 1.0;
       matGlassCurtain.opacity = 0.45;
       matOasisTurf.opacity = 1.0;
@@ -1575,9 +1851,16 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
       }
     }
 
+    const baseBuildingHeight = 32.0;
+    const actualBuildingHeight = totalStoreys * floorHeight;
+    const scaleFactorY = actualBuildingHeight / baseBuildingHeight;
+
     function smoothCameraTransition(camX, camY, camZ, tarX, tarY, tarZ) {
-      camera.position.set(camX, camY, camZ);
-      controls.target.set(tarX, tarY, tarZ);
+      // Scale camera Y and target Y dynamically based on actual building height to keep it centered
+      const adjustedCamY = camY * scaleFactorY;
+      const adjustedTarY = tarY * scaleFactorY;
+      camera.position.set(camX, adjustedCamY, camZ);
+      controls.target.set(tarX, adjustedTarY, tarZ);
       controls.update();
     }
 
@@ -1799,16 +2082,18 @@ export const getArchitectural3DHtmlBlock = (selectedProject: Project | null | un
       requestAnimationFrame(animate);
       controls.update();
       
+      liftTime += 0.015;
+      
       if (autoRotateActive) {
         completeBuildingGroup.rotation.y += 0.0012;
       } else {
         completeBuildingGroup.rotation.y = 0; // standard view lock
       }
 
-      // Actively animate elevators
-      liftTime += 0.015;
-      elevatorCab1.position.y = 3 + Math.abs(Math.sin(liftTime)) * 26;
-      elevatorCab2.position.y = 3 + Math.abs(Math.cos(liftTime + 1.5)) * 26;
+      // Actively animate elevators dynamically scaled to building height
+      const maxLiftHeight = (totalStoreys - 1.5) * floorHeight;
+      elevatorCab1.position.y = 1.5 + Math.abs(Math.sin(liftTime)) * maxLiftHeight;
+      elevatorCab2.position.y = 1.5 + Math.abs(Math.cos(liftTime + 1.5)) * maxLiftHeight;
       
       if (isVRMode) {
         // Enforce side-by-side stereo split-screen

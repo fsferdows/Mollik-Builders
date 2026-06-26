@@ -114,6 +114,10 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
+app.get("/api/gemini-key", (req, res) => {
+  res.json({ apiKey: process.env.GEMINI_API_KEY || "" });
+});
+
 app.get("/api/3d-view", (req, res) => {
   const projectId = (req.query.id as string) || "mollik-tower";
   const lang = (req.query.lang || "en") === "bn" ? "bn" : "en";

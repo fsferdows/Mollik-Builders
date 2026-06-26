@@ -2412,19 +2412,36 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Corporate HQ Address Row */}
+                  {/* Head Office Address Row */}
                   <div className="flex items-start gap-2.5">
                     <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
                       <MapPin className="w-3.5 h-3.5" />
                     </div>
                     <div>
                       <h4 className="text-[9px] font-mono font-bold tracking-widest text-[#C8A165] uppercase leading-none">
-                        {language === "en" ? "Corporate HQ" : "কর্পোরেট প্রধান কার্যালয়"}
+                        {language === "en" ? "Head Office" : "হেড অফিস"}
                       </h4>
                       <p className="text-[10px] text-neutral-200 font-light mt-1.5 leading-normal">
-                        {language === "en" 
-                          ? "Bhuiyan Bari Mor, Plot-Miyabari, Uttarkhan, Uttara, Dhaka-1230."
-                          : "ভূঁইয়াবাড়ী মোড়, প্লট-মিয়াবাড়ী, উত্তরখান, উত্তরা, ঢাকা-১২৩০।"}
+                        {language === "en"
+                          ? "House No. 238, Faydabad Police Station, South Khan, Dhaka."
+                          : "বাড়ি নং ২৩৮, ফায়দাবাদ পুলিশ ফাঁড়ি, দক্ষিন খান, ঢাকা।"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Branch Office Address Row */}
+                  <div className="flex items-start gap-2.5">
+                    <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">
+                      <MapPin className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <h4 className="text-[9px] font-mono font-bold tracking-widest text-[#C8A165] uppercase leading-none">
+                        {language === "en" ? "Branch Office" : "ব্রাঞ্চ অফিস"}
+                      </h4>
+                      <p className="text-[10px] text-neutral-200 font-light mt-1.5 leading-normal">
+                        {language === "en"
+                          ? "Bhuiyabari, Bashtala, Mollik City, Uttarkhan, Dhaka."
+                          : "ভুইয়াবাড়ী, বাঁশতলা, মল্লিক সিটি, উত্তরখান, ঢাকা।"}
                       </p>
                     </div>
                   </div>

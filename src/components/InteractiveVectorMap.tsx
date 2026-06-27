@@ -41,8 +41,10 @@ export default function InteractiveVectorMap({ language }: InteractiveVectorMapP
   const [isRouting, setIsRouting] = useState(false);
 
   // Address Details
-  const hqAddress = "House #42, Road #11, Sector-4, Gulshan-2, Dhaka-1212";
-  const hqAddressBn = "হাউজ #৪২, রোড #১১, সেক্টর-৪, গুলশান-২, ঢাকা-১২১২";
+  const hqAddress = "House No. 238, Faydabad Police Station, South Khan, Dhaka.";
+  const hqAddressBn = "বাড়ি নং ২৩৮, ফায়দাবাদ পুলিশ ফাঁড়ি, দক্ষিন খান, ঢাকা।";
+  const branchAddress = "Bhuiyabari, Bashtala, Mollik City, Uttarkhan, Dhaka.";
+  const branchAddressBn = "ভুইয়াবাড়ী, বাঁশতলা, মল্লিক সিটি, উত্তরখান, ঢাকা।";
 
   // Infrastructure nodes
   const nodes: InfrastructureNode[] = [
@@ -464,19 +466,37 @@ export default function InteractiveVectorMap({ language }: InteractiveVectorMapP
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              className="absolute top-16 left-1/2 -translate-x-1/2 z-30 w-[90%] max-w-xs p-3.5 bg-neutral-900/95 backdrop-blur-md rounded-xl border border-[#C8A165]/30 shadow-2xl text-center"
+              className="absolute top-16 left-1/2 -translate-x-1/2 z-30 w-[95%] max-w-sm p-4 bg-neutral-900/95 backdrop-blur-md rounded-xl border border-[#C8A165]/30 shadow-2xl text-left"
             >
-              <div className="flex items-center justify-center gap-1.5 mb-1 text-[#C8A165]">
-                <Sparkles className="w-4 h-4 animate-pulse" />
+              <div className="flex items-center gap-1.5 mb-2 text-[#C8A165] border-b border-[#C8A165]/20 pb-1.5">
+                <Sparkles className="w-4 h-4 animate-pulse shrink-0" />
                 <span className="text-[10px] font-mono tracking-widest uppercase font-black">
-                  {language === "en" ? "MOLLIK BUILDERS HEADQUARTERS" : "মোল্লিক বিল্ডার্স সদর দফতর"}
+                  {language === "en" ? "MOLLIK BUILDERS OFFICE LOCATIONS" : "মোল্লিক বিল্ডার্স অফিস সমূহ"}
                 </span>
               </div>
-              <p className="text-[11px] text-white font-medium leading-relaxed">
-                {language === "en" ? hqAddress : hqAddressBn}
-              </p>
-              <div className="mt-1.5 text-[9px] text-neutral-400 font-mono">
-                {language === "en" ? "Latitude: 23.7925° N | Longitude: 90.4184° E" : "অক্ষাংশ: ২৩.৭৯২৫° উত্তর | দ্রাঘিমাংশ: ৯০.৪১৮৪° পূর্ব"}
+              
+              <div className="space-y-3">
+                <div>
+                  <h5 className="text-[10px] font-bold text-[#C8A165] font-mono uppercase">
+                    {language === "en" ? "Corporate HQ (Head Office)" : "কর্পোরেট হেডকোয়ার্টার (হেড অফিস)"}
+                  </h5>
+                  <p className="text-[11px] text-white font-medium leading-relaxed mt-0.5">
+                    {language === "en" ? hqAddress : hqAddressBn}
+                  </p>
+                </div>
+                
+                <div>
+                  <h5 className="text-[10px] font-bold text-[#C8A165] font-mono uppercase">
+                    {language === "en" ? "Sub-Branch (Branch Office)" : "সাব-ব্রাঞ্চ (ব্রাঞ্চ অফিস)"}
+                  </h5>
+                  <p className="text-[11px] text-white font-medium leading-relaxed mt-0.5">
+                    {language === "en" ? branchAddress : branchAddressBn}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mt-2.5 pt-1.5 border-t border-neutral-800 text-[8.5px] text-neutral-450 font-mono">
+                {language === "en" ? "HQ Lat/Lng: 23.8647° N | 90.4132° E" : "হেড অফিস অক্ষাংশ/দ্রাঘিমাংশ: ২৩.৮৬৪৭° উত্তর | ৯০.৪১৩২° পূর্ব"}
               </div>
             </motion.div>
           )}

@@ -2997,10 +2997,21 @@ export default function App() {
               <h4 className="font-serif font-black text-xl">Mollik Builders Corporate HQ</h4>
               
               <div className="space-y-2 text-xs text-neutral-300">
-                <p>📍 House #42, Road #11, Sector-4, Gulshan-2, Dhaka-1212</p>
-                <p>📞 Phone: +880 1715-120802 (Chairman & MD), +880 1811-253989, +880 1928-258818</p>
-                <p>✉️ Email: info@mollikbuilders.com</p>
-                <p>🕒 Hours: Sat-Thu 9:00 AM - 7:00 PM</p>
+                <p>
+                  📍 <strong>{language === "en" ? "Corporate HQ (Head Office):" : "কর্পোরেট হেডকোয়ার্টার (হেড অফিস):"}</strong>{" "}
+                  {language === "en"
+                    ? "House No. 238, Faydabad Police Station, South Khan, Dhaka."
+                    : "বাড়ি নং ২৩৮, ফায়দাবাদ পুলিশ ফাঁড়ি, দক্ষিন খান, ঢাকা।"}
+                </p>
+                <p>
+                  📍 <strong>{language === "en" ? "Sub-Branch (Branch Office):" : "সাব-ব্রাঞ্চ (ব্রাঞ্চ অফিস):"}</strong>{" "}
+                  {language === "en"
+                    ? "Bhuiyabari, Bashtala, Mollik City, Uttarkhan, Dhaka."
+                    : "ভুইয়াবাড়ী, বাঁশতলা, মল্লিক সিটি, উত্তরখান, ঢাকা।"}
+                </p>
+                <p>📞 {language === "en" ? "Phone:" : "ফোন:"} +880 1715-120802 (Chairman & MD), +880 1811-253989, +880 1928-258818</p>
+                <p>✉️ {language === "en" ? "Email:" : "ইমেইল:"} info@mollikbuilders.com</p>
+                <p>🕒 {language === "en" ? "Hours:" : "সময়সূচী:"} {language === "en" ? "Sat-Thu 9:00 AM - 7:00 PM" : "শনি-বৃহস্পতি সকাল ৯:০০ - সন্ধ্যা ৭:০০"}</p>
               </div>
 
               <div className="p-3 bg-neutral-950/70 rounded border border-neutral-800 text-[11px] text-neutral-400">

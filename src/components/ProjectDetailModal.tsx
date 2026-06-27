@@ -300,7 +300,7 @@ export default function ProjectDetailModal({ project, language, onClose, onNewBo
             </main>
 
             <footer class="border-t border-neutral-200 pt-6 flex justify-between items-center text-[10px] text-neutral-400">
-              <span class="font-semibold text-neutral-500">Mollik Builders HQ • House #32, Road #11, Gulshan-2, Dhaka</span>
+              <span class="font-semibold text-neutral-500">Mollik Builders HQ • House No. 238, Faydabad Police Station, South Khan, Dhaka</span>
               <span>Spec Validation Stamp © 2026. All Handover Rights Guaranteed.</span>
             </footer>
           </div>

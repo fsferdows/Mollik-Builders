@@ -272,9 +272,6 @@ export default function ProjectCard({
           {/* Subtle vignette/gradients for premium depth */}
           <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/30 via-transparent to-neutral-950/10 pointer-events-none" />
           
-          {/* Subtle golden shimmery overlay on hover */}
-          <div className={`absolute inset-0 bg-gradient-to-tr from-[#C8A165]/15 via-transparent to-[#1B4D3E]/15 pointer-events-none transition-all duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
-          
           {/* Diagonal laser flare swipe on hover */}
           <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-12 translate-x-[-200%] group-hover:translate-x-[250%] transition-transform duration-[1200ms] ease-out pointer-events-none" />
 
@@ -293,7 +290,7 @@ export default function ProjectCard({
           </div>
 
           {/* Status Label Overlay with interactive scale */}
-          <div className="absolute top-3 left-3 bg-[#181A19]/85 backdrop-blur-md px-3 py-1.5 text-[9px] font-bold uppercase text-[#C8A165] tracking-widest rounded transition-all duration-300 group-hover:bg-[#C8A165] group-hover:text-neutral-950 shadow-md">
+          <div className="absolute top-3 left-3 bg-[#181A19]/85 backdrop-blur-md px-3 py-1.5 text-[9px] font-bold uppercase text-[#C8A165] tracking-widest rounded shadow-md">
             {language === "en" ? project.status : project.statusBn}
           </div>
 
@@ -396,7 +393,7 @@ export default function ProjectCard({
             </div>
             
             {/* Proximity / Landmark Tag component dynamically customized */}
-            <span className="inline-flex items-center gap-1 bg-[#C8A165]/5 text-[#C8A165] text-[9.5px] font-bold px-2 py-0.5 rounded border border-[#C8A165]/15 transition-all group-hover:bg-[#C8A165]/10">
+            <span className="inline-flex items-center gap-1 bg-[#C8A165]/5 text-[#C8A165] text-[9.5px] font-bold px-2 py-0.5 rounded border border-[#C8A165]/15 transition-all">
               <Compass className="w-3 h-3 text-[#C8A165]" />
               <span>{language === "en" ? info.landmarkEn : info.landmarkBn}</span>
             </span>
@@ -407,7 +404,7 @@ export default function ProjectCard({
           </h3>
 
           {/* Specification layout grid with Interactive Price per SQFT conversion */}
-          <div className="grid grid-cols-2 gap-3 py-2.5 bg-neutral-50 px-3.5 rounded-lg border border-neutral-150 transition-colors duration-300 group-hover:bg-neutral-100/40">
+          <div className="grid grid-cols-2 gap-3 py-2.5 bg-neutral-50 px-3.5 rounded-lg border border-neutral-150 transition-colors duration-300">
             <div>
               <span className="text-neutral-400 text-[10px] block font-bold uppercase tracking-wider">{language === "en" ? "App Size" : "আয়তন"}:</span>
               <span className="font-extrabold text-neutral-700 text-xs">{language === "en" ? project.size : project.sizeBn}</span>

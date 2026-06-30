@@ -1248,7 +1248,7 @@ export default function App() {
 
       {/* 2_HERO_SECTION */}
       {/* Dynamic continuous background transition slider */}
-      <section className="relative w-full h-[85vh] sm:h-[80vh] bg-neutral-900 overflow-hidden flex items-center">
+      <section className="relative w-full h-[72vh] md:h-[68vh] min-h-[460px] md:min-h-[550px] bg-neutral-900 overflow-hidden flex items-center">
         {/* Active Slide Image with Cinematic Motion */}
         <AnimatePresence mode="popLayout">
           <motion.div 
@@ -1272,9 +1272,9 @@ export default function App() {
         {/* Content Overlay with Scrolling Storytelling Typography */}
         <motion.div 
           style={{ y: heroTextY, opacity: heroTextAlpha }}
-          className="max-w-7xl mx-auto px-4 md:px-12 relative z-10 w-full text-white space-y-6"
+          className="max-w-7xl mx-auto px-4 md:px-12 relative z-10 w-full text-white space-y-4"
         >
-          <div className="max-w-3xl space-y-5">
+          <div className="max-w-3xl space-y-3.5">
             
             {/* Elegant thread pre-headline instead of simple card-badge */}
             <AnimatePresence mode="popLayout">
@@ -1302,7 +1302,7 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-                className="text-4xl sm:text-5xl lg:text-[5.5rem] font-serif font-bold tracking-tight text-white leading-[1.1] text-shadow"
+                className="text-[26px] xs:text-3xl sm:text-4xl lg:text-5xl xl:text-[4rem] font-serif font-bold tracking-tight text-white leading-[1.1] text-shadow"
               >
                 {renderStoryText(language === "en" ? slides[currentSlide].title : slides[currentSlide].titleBn, language === "bn")}
               </motion.h1>
@@ -1317,7 +1317,7 @@ export default function App() {
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.6, delay: 0.35, ease: "easeOut" }}
                 style={{ x: heroRightSlide }}
-                className="text-sm sm:text-lg text-neutral-300 font-light leading-relaxed max-w-xl italic border-l-2 border-[#C8A165]/40 pl-4 py-1"
+                className="text-xs sm:text-sm md:text-base text-neutral-300 font-light leading-relaxed max-w-xl italic border-l-2 border-[#C8A165]/40 pl-4 py-0.5"
               >
                 {language === "en" ? slides[currentSlide].description : slides[currentSlide].descriptionBn}
               </motion.p>
@@ -1349,6 +1349,19 @@ export default function App() {
             </AnimatePresence>
           </div>
         </motion.div>
+
+        {/* Slide Indicators / Bullet Controls */}
+        <div className="absolute bottom-6 left-4 md:left-12 z-20 flex gap-2">
+          {slides.map((_, idx) => (
+            <button
+              key={`hero-slide-dot-${idx}`}
+              type="button"
+              onClick={() => setCurrentSlide(idx)}
+              className={`h-1.2 rounded-full transition-all duration-300 cursor-pointer ${idx === currentSlide ? 'w-6 bg-[#C8A165]' : 'w-1.5 bg-white/40 hover:bg-white/70'}`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
       </section>
 
       {/* 3_SEARCH_BAR_SECTION */}
@@ -2504,7 +2517,7 @@ export default function App() {
             />
           </div>
 
-          <div className="columns-1 md:columns-2 gap-6 space-y-6 [&>div]:break-inside-avoid">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {MEDIA_NEWS.map((article, index) => (
               <MediaCard key={`media-news-card-${index}`} article={article} language={language} />
             ))}

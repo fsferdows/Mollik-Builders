@@ -66,7 +66,7 @@ export default function MediaCard({ article, language }: MediaCardProps) {
         rotateY,
         transformStyle: "preserve-3d",
       }}
-      className="inline-block w-full bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm md:shadow-md/5 hover:border-[#C8A165]/30 transition-shadow duration-500 ease-out flex flex-col md:flex-row gap-5 items-stretch overflow-hidden group select-none relative"
+      className="w-full h-full bg-white p-6 rounded-2xl border border-neutral-200 shadow-sm md:shadow-md/5 hover:border-[#C8A165]/30 transition-shadow duration-500 ease-out flex flex-col md:flex-row gap-5 items-stretch overflow-hidden group select-none relative"
       animate={{
         y: isHovered ? -4 : 0,
         boxShadow: isHovered 
@@ -131,12 +131,12 @@ export default function MediaCard({ article, language }: MediaCardProps) {
           <span className="text-[10px] sm:text-[11px] font-black tracking-widest uppercase font-mono text-[#C8A165] block bg-[#C8A165]/5 border border-[#C8A165]/10 px-2 py-0.5 rounded-full w-max">
             {article.outlet}
           </span>
-          <h4 className="font-serif font-bold text-neutral-850 hover:text-[#1B4D3E] transition-colors leading-snug text-sm sm:text-base pt-1">
+          <h4 className="font-serif font-bold text-neutral-850 hover:text-[#1B4D3E] transition-colors leading-snug text-sm sm:text-base pt-1 line-clamp-2 min-h-[44px] flex items-center">
             {language === "en" ? article.title : article.titleBn}
           </h4>
         </div>
         
-        <p className="text-xs text-neutral-500 font-light leading-relaxed">
+        <p className="text-xs text-neutral-500 font-light leading-relaxed line-clamp-3 min-h-[54px]">
           {language === "en" ? article.summary : article.summaryBn}
         </p>
 

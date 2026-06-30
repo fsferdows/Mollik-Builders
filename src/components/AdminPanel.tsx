@@ -154,7 +154,7 @@ export default function AdminPanel({ language, onClose, webConfig, onConfigSaved
         bioBn: webConfig.founderBioBn || "",
         exp: webConfig.founderExp || "",
         expBn: webConfig.founderExpBn || "",
-        image: webConfig.founderImage || "/chairman.png"
+        image: webConfig.founderImage || "/chairman.webp"
       });
 
       setAboutConfig({

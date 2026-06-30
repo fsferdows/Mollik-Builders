@@ -55,7 +55,7 @@ const LEADERS_DATA: Leader[] = [
     titleBn: "প্রতিষ্ঠাতা ও চেয়ারম্যান",
     role: "Chairman's Secretariat Office",
     roleBn: "চেয়ারম্যান ও ব্যবস্থাপনা পরিচালক",
-    image: "/chairman.png",
+    image: "/chairman.webp",
     bio: "Under the visionary hand of Chairman Md. Saheb Ali Mollik, Mollik Builders stands as a standard-bearer of absolute integrity, architectural safety, and construction transparency in Uttara and Dakshinkhan. Emphasizing modern earthquake-resistant structural safety and complete legal disclosures, he paves the way for secure, timeless residential masterpieces.",
     bioBn: "চেয়ারম্যান মোঃ সাহেব আলী মল্লিকের দূরদর্শী নেতৃত্বে মল্লিক বিল্ডার্স উত্তরা ও দক্ষিণখানের আবাসন খাতের সততা, নিরাপত্তা ও সফলতার প্রতীক হিসেবে দাঁড়িয়ে আছে। আধুনিক ভূমিকম্প সহনশীল কাঠামো এবং শতভাগ আইনি স্বচ্ছতা বজায় রেখে তিনি গড়ে চলেছেন নিখুঁত ও গৌরবময় আবাসন প্রজেক্টসমূহ।",
     badge: "FOUNDER & CHAIRMAN",

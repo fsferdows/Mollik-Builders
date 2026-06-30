@@ -22,7 +22,7 @@ import { DhakaWeatherWidget, MollikPrestigeBadge } from "./components/CompanyHea
 import AIVoiceConcierge from "./components/AIVoiceConcierge";
 
 
-const chairmanImg = "/chairman.png";
+const chairmanImg = "/chairman.webp";
 
 const AdminPanel = lazy(() => import("./components/AdminPanel"));
 const ProjectDetailModal = lazy(() => import("./components/ProjectDetailModal"));
@@ -110,7 +110,7 @@ const renderStoryText = (text: string, isBn: boolean) => {
 
 const MEDIA_NEWS = [
   {
-    image: "/uploads/project 2(1).png",
+    image: "/uploads/project 2(1).webp",
     outlet: "The Daily Star • Award 2026",
     title: "Recognized for Pioneering BNBC Earthquake Resistant Infrastructure in Uttara Hub",
     titleBn: "উত্তরা হাব-এ বিএনবিসি ভূমিকম্প সহনশীল অবকাঠামোয় অগ্রগামীদের স্বীকৃতি",
@@ -118,7 +118,7 @@ const MEDIA_NEWS = [
     summaryBn: "আধুনিক টাওয়ারে হাইডেন্সিটি কংক্রিট পাইলিং এবং খাড়া সবুজ ল্যান্ডস্কেপিং স্থাপত্যের জন্য পুরস্কৃত।"
   },
   {
-    image: "/uploads/project 8 (1).png",
+    image: "/uploads/project 8 (1).webp",
     outlet: "Prothom Alo • Feature",
     title: "Transparency in Real Estate: Mollik Builders Introduces Secure Unit Tracking API",
     titleBn: "রিয়েল এস্টেটে স্বচ্ছতা: নিরাপদ ইউনিট ট্র্যাকিং এপিআই নিয়ে এলো মল্লিক বিল্ডার্স",
@@ -126,7 +126,7 @@ const MEDIA_NEWS = [
     summaryBn: "গ্রাহকদের দ্বৈত-বুকিং নির্মূলে সর্বাধুনিক রিয়েল-টাইম লাইভ ক্যাটালগ ট্র্যাক সিস্টেম।"
   },
   {
-    image: "/uploads/project 3.png",
+    image: "/uploads/project 3.webp",
     outlet: "The Business Standard • Profile",
     title: "Mollik Builders' Standard Setting Green Concrete Technology Proves Resilient",
     titleBn: "পরিবেশবান্ধব গ্রিন কনক্রিট প্রযুক্তি ও টেকসই নির্মাণে মল্লিক বিল্ডার্স",
@@ -134,7 +134,7 @@ const MEDIA_NEWS = [
     summaryBn: "পরিবেশবান্ধব উপাদান ব্যবহার করে কার্বন নির্গমন হ্রাস ও দীর্ঘস্থায়ী অবকাঠামো গঠনের অনন্য প্রয়াস।"
   },
   {
-    image: "/uploads/project 9.png",
+    image: "/uploads/project 9.webp",
     outlet: "Financial Express • Real Estate Dialogues",
     title: "Exclusive Interview: Building Homes Tailored for Generations with Zero-Loss Design",
     titleBn: "শতভাগ স্পেস ইউটিলিটি ডিজাইনে প্রজন্মের জন্য নিরাপদ আবাসন",
@@ -224,15 +224,15 @@ export default function App() {
     founderBioBn: "চেয়ারম্যান মোঃ সাহেব আলী মল্লিকের দূরदर्शी নেতৃত্বে মল্লিক বিল্ডার্স উত্তরা ও দক্ষিণখানের আবাসন খাতের সততা, নিরাপত্তা ও সফলতার প্রতীক হিসেবে দাঁড়িয়ে আছে। আধুনিক ভূমিকম্প সহনশীল কাঠামো এবং শতভাগ আইনি স্বচ্ছতা বজায় রেখে তিনি গড়ে চলেছেন নিখুঁত ও গৌরবময় আবাসন প্রজেক্টসমূহ।",
     founderExp: "25+ Years of Real Estate & Structural Engineering Supremacy",
     founderExpBn: "রিয়েল এস্টেট ও স্ট্রাকচারাল ইঞ্জিনিয়ারিংয়ে ২৫+ বছরের শ্রেষ্ঠত্ব",
-    founderImage: "/chairman.png",
+    founderImage: "/chairman.webp",
     aboutTitle: "About Our Enterprise",
     aboutTitleBn: "আমাদের উদ্যোগ সম্পর্কে",
     aboutText: "Mollik Builders is a leading premium real estate developer in Bangladesh. With over a decade of dedication to civil excellence, we craft sustainable landmark addresses across Dhaka. Each project integrates modern seismic designs, sound isolation, and meticulously organized green foliage. We operate on a foundation of complete transparency — no hidden cost sheets, explicit RAJUK compliance, and guaranteed deadlines.",
     aboutTextBn: "মল্লিক বিল্ডার্স বাংলাদেশের অন্যতম প্রথম সারির একটি প্রিমিয়াম রিয়েল এস্টেট কোম্পানি। গত এক দশক ধরে আমরা ঢাকার প্রধান প্রধান আবাসন এলাকায় নির্ভরযোগ্য ও ভূমিকম্প প্রতিরোধক ডিজাইনার ভবন বা বাণিজ্যিক ভবন প্রস্তুত করে আসছি। আমাদের প্রতিটি প্রজেক্ট রাজুক কর্তৃক অনুমোদিত এবং সম্পূর্ণ স্বচ্ছ চুক্তির সাথে সঠিক ডেডলাইনে হস্তান্তর করা হয়।",
-    aboutImage: "/uploads/project 2(1).png",
+    aboutImage: "/uploads/project 2(1).webp",
     heroSlides: [
       {
-        image: "/uploads/project 1.png",
+        image: "/uploads/project 1.webp",
         title: "Architectural Excellence & Modern Design",
         titleBn: "স্থাপত্যের শ্রেষ্ঠত্ব ও আধুনিক নকশা",
         subtitle: "Mollik Builders Premium",
@@ -241,7 +241,7 @@ export default function App() {
         descriptionBn: "পরিষ্কার নান্দনিক গঠন, সর্বোচ্চ প্রাকৃতিক আলো-বাতাস চলাচল এবং পর্যাপ্ত জায়গা উপযোগী নকশা।"
       },
       {
-        image: "/uploads/Project 2.png",
+        image: "/uploads/Project 2.webp",
         title: "The Art of Luxurious Urban Living",
         titleBn: "শহুরে অভিজাত জীবনযাত্রার নতুন সংজ্ঞা",
         subtitle: "Quiet Luxury Residences",
@@ -250,7 +250,7 @@ export default function App() {
         descriptionBn: "ঢাকার হৃদয়ে মনোরম প্রকৃতির ছোঁয়ায় বিলাসবহুল ও সুরক্ষিত আবাসন।"
       },
       {
-        image: "/uploads/project 3.png",
+        image: "/uploads/project 3.webp",
         title: "Sustainable Eco-Friendly High-Rises",
         titleBn: "পরিবেশবান্ধব ও সবুজ আবাসন",
         subtitle: "Eco-conscious Construction",
@@ -259,7 +259,7 @@ export default function App() {
         descriptionBn: "ভূমিকম্প সহনশীল শক্তিশালী কাঠামো এবং দৃষ্টিনন্দন ঝুলন্ত সুবজের এক চমৎকার সমন্বয়।"
       },
       {
-        image: "/uploads/project 8.png",
+        image: "/uploads/project 8.webp",
         title: "State-of-the-Art Structural Engineering",
         titleBn: "অত্যাধুনিক স্ট্রাকচারাল ইঞ্জিনিয়ারিং",
         subtitle: "RAJUK Approved Blueprint",
@@ -268,7 +268,7 @@ export default function App() {
         descriptionBn: "আন্তর্জাতিক বিএনবিসি মানদণ্ড এবং রাজউক অনুমোদন মেনে নিখুঁত নির্মাণ।"
       },
       {
-        image: "/uploads/project 9.png",
+        image: "/uploads/project 9.webp",
         title: "Exclusive Layouts & Floor Plans",
         titleBn: "এক্সক্লুসিভ লেআউট ও ফ্লোর প্ল্যান",
         subtitle: "Smart Space Optimization",
@@ -581,7 +581,7 @@ export default function App() {
     }
     return [
       {
-        image: uxSettings.heroBgUrl || "/uploads/project 1.png",
+        image: uxSettings.heroBgUrl || "/uploads/project 1.webp",
         titleBn: uxSettings.heroTitleBn || "স্থাপত্যের শ্রেষ্ঠত্ব ও আধুনিক নকশা",
         title: uxSettings.heroTitleEn || "Architectural Excellence & Modern Design",
         subtitle: "Mollik Builders Premium",
@@ -590,7 +590,7 @@ export default function App() {
         descriptionBn: uxSettings.heroSubBn || "পরিষ্কার নান্দনিক গঠন, সর্বোচ্চ প্রাকৃতিক আলো-বাতাস চলাচল এবং পর্যাপ্ত জায়গা উপযোগী নকশা।"
       },
       {
-        image: "/uploads/Project 2.png",
+        image: "/uploads/Project 2.webp",
         titleBn: "শহুরে অভিজাত জীবনযাত্রার নতুন সংজ্ঞা",
         title: "The Art of Luxurious Urban Living",
         subtitle: "Quiet Luxury Residences",
@@ -599,7 +599,7 @@ export default function App() {
         descriptionBn: "ঢাকার হৃদয়ে মনোরম প্রকৃতির ছোঁয়ায় বিলাসবহুল ও সুরক্ষিত আবাসন।"
       },
       {
-        image: "/uploads/project 3.png",
+        image: "/uploads/project 3.webp",
         titleBn: "পরিবেশবান্ধব ও সবুজ আবাসন",
         title: "Sustainable Eco-Friendly High-Rises",
         subtitle: "Eco-conscious Construction",
@@ -608,7 +608,7 @@ export default function App() {
         descriptionBn: "ভূমিকম্প সহনশীল শক্তিশালী কাঠামো এবং দৃষ্টিনন্দন ঝুলন্ত সুবজের এক চমৎকার সমন্বয়।"
       },
       {
-        image: "/uploads/project 8.png",
+        image: "/uploads/project 8.webp",
         titleBn: "অত্যাধুনিক স্ট্রাকচারাল ইঞ্জিনিয়ারিং",
         title: "State-of-the-Art Structural Engineering",
         subtitle: "RAJUK Approved Blueprint",
@@ -617,7 +617,7 @@ export default function App() {
         descriptionBn: "আন্তর্জাতিক বিএনবিসি মানদণ্ড এবং রাজউক অনুমোদন মেনে নিখুঁত নির্মাণ।"
       },
       {
-        image: "/uploads/project 9.png",
+        image: "/uploads/project 9.webp",
         titleBn: "এক্সক্লুসিভ লেআউট ও ফ্লোর প্ল্যান",
         title: "Exclusive Layouts & Floor Plans",
         subtitle: "Smart Space Optimization",
@@ -1708,7 +1708,7 @@ export default function App() {
         >
           <div className="aspect-[4/3] rounded-xl overflow-hidden shadow-2xl border border-neutral-200">
             <img 
-              src="/uploads/project 2(1).png" 
+              src="/uploads/project 2(1).webp" 
               alt="Mollik Builders Executive Quality" 
               loading="lazy"
               referrerPolicy="no-referrer"
@@ -2107,7 +2107,7 @@ export default function App() {
 
           <div className="relative aspect-video rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800 flex items-center justify-center group cursor-pointer" onClick={() => setVideoOpen(true)}>
             <img 
-              src="/uploads/project 8 (1).png" 
+              src="/uploads/project 8 (1).webp" 
               alt="Video Review Cover" 
               loading="lazy"
               referrerPolicy="no-referrer"

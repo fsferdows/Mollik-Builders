@@ -64,7 +64,7 @@ export default function FloorPlan({ language = 'en', selectedProject, active3DPr
   const [isLoading3DFullscreen, setIsLoading3DFullscreen] = useState<boolean>(true);
   const [selectedFloor, setSelectedFloor] = useState<number>(1); // 0 = Ground Floor, 1-9 = Residential Floors
   const [selectedUnitId, setSelectedUnitId] = useState<string>('A');
-  const [layoutViewMode, setLayoutViewMode] = useState<'blueprint' | 'three3d' | 'analytics'>('three3d');
+  const [layoutViewMode, setLayoutViewMode] = useState<'blueprint' | 'three3d' | 'analytics'>('blueprint');
   const [selectedThreeStep, setSelectedThreeStep] = useState<string>('all');
   const [isFullScreen3D, setIsFullScreen3D] = useState<boolean>(false);
   const [is3DModelHidden, setIs3DModelHidden] = useState<boolean>(false);
@@ -75,6 +75,34 @@ export default function FloorPlan({ language = 'en', selectedProject, active3DPr
   const [hoveredRoom, setHoveredRoom] = useState<{ name: string; nameBn: string; sizeSqFt: number } | null>(null);
   const [isMaximizedBlueprint, setIsMaximizedBlueprint] = useState<boolean>(false);
   
+  // Intersection Observer for performance optimization (WebGL lazy loading)
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isSectionInView, setIsSectionInView] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      setIsSectionInView(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsSectionInView(entry.isIntersecting);
+      },
+      {
+        rootMargin: '300px', // Pre-load 300px before section comes into view
+        threshold: 0.01
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   // Interactive 3D Simulation States
   const [explodeFactor, setExplodeFactor] = useState<number>(0);
   const [wireframeMode, setWireframeMode] = useState<boolean>(false);
@@ -712,7 +740,7 @@ export default function FloorPlan({ language = 'en', selectedProject, active3DPr
   const soldCount = allFlats.filter(f => f.status === 'Sold').length;
 
   return (
-    <section id="floorplan" className="py-16 md:py-24 bg-gradient-to-b from-[#0c0e14] via-[#090b10] to-[#050609] text-white relative border-t border-neutral-900 overflow-hidden shadow-[inset_0_4px_30px_rgba(0,0,0,0.5)]">
+    <section ref={sectionRef} id="floorplan" className="py-16 md:py-24 bg-gradient-to-b from-[#0c0e14] via-[#090b10] to-[#050609] text-white relative border-t border-neutral-900 overflow-hidden shadow-[inset_0_4px_30px_rgba(0,0,0,0.5)]">
       {/* FULLSCREEN 3D CINEMATIC IMMERSION MODAL */}
       <AnimatePresence>
         {isFullScreen3D && (
@@ -1203,7 +1231,7 @@ export default function FloorPlan({ language = 'en', selectedProject, active3DPr
 
               {/* WebGL Hosting */}
               <div className="w-full relative h-[380px] sm:h-[450px] md:h-[500px] lg:h-[600px] bg-neutral-950">
-                {isLoading3D && (
+                {(!isSectionInView || isLoading3D) && (
                   <div className="absolute inset-0 z-40 bg-neutral-950 flex flex-col items-center justify-center p-8 text-center overflow-hidden">
                     <style>{`
                       @keyframes progressSweep {
@@ -1252,7 +1280,7 @@ export default function FloorPlan({ language = 'en', selectedProject, active3DPr
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full bg-gold-400/10 flex items-center justify-center border border-gold-400/30 shrink-0 text-gold-400">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21" />
                         </svg>
                       </div>
                       <div className="flex-1">
@@ -1304,29 +1332,31 @@ export default function FloorPlan({ language = 'en', selectedProject, active3DPr
                   </div>
                 )}
 
-                <iframe
-                  id="abrar-3d-iframe"
-                  title="3D Architectural Model"
-                  className="w-full h-full border-none bg-neutral-950 block"
-                  referrerPolicy="no-referrer"
-                  srcDoc={getArchitectural3DHtmlBlock(currentProj, language)}
-                  onLoad={(e) => {
-                    setIsLoading3D(false);
-                    try {
-                      const iframe = e.currentTarget;
-                      if (iframe.contentWindow) {
-                        iframe.contentWindow.dispatchEvent(new Event('resize'));
-                        // Sync current state on load
-                        iframe.contentWindow.postMessage({ type: 'toggle-tower-visibility', visible: !is3DModelHidden }, '*');
-                        iframe.contentWindow.postMessage({ type: 'set-explode-factor', factor: explodeFactor }, '*');
-                        iframe.contentWindow.postMessage({ type: 'toggle-wireframe', wireframe: wireframeMode }, '*');
-                        iframe.contentWindow.postMessage({ type: 'simulate-lighting', lightMode: lightingMode }, '*');
+                {isSectionInView && (
+                  <iframe
+                    id="abrar-3d-iframe"
+                    title="3D Architectural Model"
+                    className="w-full h-full border-none bg-neutral-950 block"
+                    referrerPolicy="no-referrer"
+                    srcDoc={getArchitectural3DHtmlBlock(currentProj, language)}
+                    onLoad={(e) => {
+                      setIsLoading3D(false);
+                      try {
+                        const iframe = e.currentTarget;
+                        if (iframe.contentWindow) {
+                          iframe.contentWindow.dispatchEvent(new Event('resize'));
+                          // Sync current state on load
+                          iframe.contentWindow.postMessage({ type: 'toggle-tower-visibility', visible: !is3DModelHidden }, '*');
+                          iframe.contentWindow.postMessage({ type: 'set-explode-factor', factor: explodeFactor }, '*');
+                          iframe.contentWindow.postMessage({ type: 'toggle-wireframe', wireframe: wireframeMode }, '*');
+                          iframe.contentWindow.postMessage({ type: 'simulate-lighting', lightMode: lightingMode }, '*');
+                        }
+                      } catch (err) {
+                        console.warn(err);
                       }
-                    } catch (err) {
-                      console.warn(err);
-                    }
-                  }}
-                />
+                    }}
+                  />
+                )}
               </div>
             </div>
 

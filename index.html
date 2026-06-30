@@ -1,35 +1,85 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Character Encoding & Responsive Viewport (Must be declared first) -->
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- PWA configuration and styling -->
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#1B4D3E" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="/pwa_icon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
-    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Page Title -->
+    <title>MOLLIK BUILDERS LTD - Premium Real Estate Development Dhaka</title>
+
+    <!-- Standard SEO Metadata -->
+    <meta name="description" content="Premium Real Estate Development in Dhaka, Bangladesh. Specializing in RAJUK-approved, earthquake-resistant luxury apartments, land shares, and residential properties with transparent legal documentation." />
+    <meta name="robots" content="index,follow" />
+    <meta name="googlebot" content="index,follow" />
+    <meta name="google" content="nositelinkssearchbox" />
+    <meta name="google" content="notranslate" />
+    <meta name="subject" content="Real Estate & Property Development" />
+    <meta name="rating" content="General" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="generator" content="Vite + React" />
+
+    <!-- Geographic Coordinates (GEO Tags for Local SEO in Bangladesh) -->
+    <meta name="ICBM" content="23.8683, 90.4334" />
+    <meta name="geo.position" content="23.8683;90.4334" />
+    <meta name="geo.region" content="BD-13" />
+    <meta name="geo.placename" content="Dhaka" />
+
+    <!-- Dublin Core (ISO 15836 Academic & Portal Search Standard) -->
+    <link rel="schema.DC" href="https://purl.org/dc/elements/1.1/" />
+    <meta name="DC.title" content="MOLLIK BUILDERS LTD - Premium Real Estate Development" />
+    <meta name="DC.creator" content="Md. Saheb Ali Mollik" />
+    <meta name="DC.subject" content="Real Estate; Construction; Properties; Apartments; Dhaka; Bangladesh" />
+    <meta name="DC.description" content="Premium Real Estate Development in Dhaka, Bangladesh. Specializing in RAJUK-approved, earthquake-resistant luxury apartments, land shares, and residential properties." />
+    <meta name="DC.language" content="en" />
+    <meta name="DC.type" content="Text" />
+    <meta name="DC.format" content="text/html" />
+    <meta name="DC.identifier" content="https://www.mollikbuildersltd.com/" />
 
     <!-- Open Graph / Link Sharing Metadata (Facebook, WhatsApp, LinkedIn, Slack) -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.mollikbuildersltd.com/" />
     <meta property="og:title" content="MOLLIK BUILDERS LTD" />
-    <meta property="og:description" content="Premium Real Estate Development in Dhaka. Architectural safety, structural integrity, and luxury living spaces." />
+    <meta property="og:description" content="Premium Real Estate Development in Dhaka, Bangladesh. Specializing in RAJUK-approved, earthquake-resistant luxury apartments, land shares, and residential properties." />
     <meta property="og:image" content="https://www.mollikbuildersltd.com/logo.JPG" />
+    <meta property="og:image:alt" content="Mollik Builders Logo - Luxury Real Estate Development" />
+    <meta property="og:site_name" content="Mollik Builders Ltd" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Link Sharing Metadata -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="MOLLIK BUILDERS LTD" />
-    <meta name="twitter:description" content="Premium Real Estate Development in Dhaka. Architectural safety, structural integrity, and luxury living spaces." />
+    <meta name="twitter:description" content="Premium Real Estate Development in Dhaka, Bangladesh. Specializing in RAJUK-approved, earthquake-resistant luxury apartments, land shares, and residential properties." />
     <meta name="twitter:image" content="https://www.mollikbuildersltd.com/logo.JPG" />
 
-    <title>MOLLIK BUILDERS LTD</title>
+    <!-- Mobile Browsers Orientation Lock Fallbacks (Chinese Browsers) -->
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-orientation" content="portrait" />
+
+    <!-- Canonical URL & Multilingual Alternates -->
+    <link rel="canonical" href="https://www.mollikbuildersltd.com/" />
+    <link rel="alternate" href="https://www.mollikbuildersltd.com/?lang=en" hreflang="en" />
+    <link rel="alternate" href="https://www.mollikbuildersltd.com/?lang=bn" hreflang="bn" />
+
+    <!-- Resource Hints (DNS Prefetching & Preconnecting for Load Performance) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+
+    <!-- PWA Theme Configuration -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#1B4D3E" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Mollik Builders" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/pwa_icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
 
     <!-- Async Service Worker Registration -->
     <script>

@@ -1421,7 +1421,7 @@ export default function App() {
           </div>
 
           {/* Submit Search properties */}
-          <div>
+          <div className="flex flex-col justify-end h-full">
             <button
               type="submit"
               className="relative overflow-hidden group w-full py-2.5 bg-[#1B4D3E] hover:bg-[#143d31] text-[#C8A165] font-black text-xs uppercase tracking-widest rounded transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#1B4D3E]"
@@ -1535,7 +1535,7 @@ export default function App() {
 
 
       {/* 11_CHAIRMAN_MESSAGE_SECTION */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-14 bg-white relative overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1697,7 +1697,7 @@ export default function App() {
 
 
       {/* 4_ABOUT_COMPANY_SECTION */}
-      <section id="about" className="max-w-7xl mx-auto px-4 md:px-12 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section id="about" className="max-w-7xl mx-auto px-4 md:px-12 py-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Left Storyteller image panels */}
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
@@ -1772,7 +1772,7 @@ export default function App() {
 
 
       {/* 5, 6, 7_PROJECTS_SECTION */}
-      <section id="projects" className="py-24 bg-[#F5F5F3] relative overflow-hidden">
+      <section id="projects" className="py-14 bg-[#F5F5F3] relative overflow-hidden">
         {/* Architectural grid background lines for a premium developer vibe */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#e0decb_1px,transparent_1px),linear-gradient(to_bottom,#e0decb_1px,transparent_1px)] bg-[size:4.5rem_4.5rem] opacity-[0.12] pointer-events-none select-none" />
         {/* Subtle radial gradient lighting */}
@@ -2031,7 +2031,7 @@ export default function App() {
       />
 
       {/* 8_FEATURES_AMENITIES_SECTION */}
-      <section id="amenities" className="py-20 bg-white">
+      <section id="amenities" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 md:px-12 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-4">
             <AnimatedHeading
@@ -2075,7 +2075,7 @@ export default function App() {
       </section>
 
       {/* 9_TESTIMONIALS_SECTION */}
-      <section className="py-20 bg-neutral-900 text-white relative">
+      <section className="py-12 bg-neutral-900 text-white relative">
         <div className="max-w-7xl mx-auto px-4 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
           <div className="space-y-6">
@@ -2494,7 +2494,7 @@ export default function App() {
 
 
       {/* 11_MEDIA_NEWS_SECTION */}
-      <section id="media" className="py-20 bg-neutral-100">
+      <section id="media" className="py-12 bg-neutral-100">
         <div className="max-w-7xl mx-auto px-4 md:px-12 space-y-10">
           <div className="space-y-4">
             <AnimatedHeading
@@ -2514,7 +2514,7 @@ export default function App() {
 
 
       {/* 12_BLOG_SECTION */}
-      <section id="blog" className="py-20 bg-white">
+      <section id="blog" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 md:px-12 space-y-12">
           
           <div className="flex justify-between items-end">
@@ -2566,7 +2566,7 @@ export default function App() {
 
 
       {/* 13_CAREER_SECTION */}
-      <section id="careers" className="py-20 bg-neutral-100">
+      <section id="careers" className="py-12 bg-neutral-100">
         <div className="max-w-7xl mx-auto px-4 md:px-12 space-y-12">
           
           <div className="space-y-4 text-center max-w-2xl mx-auto">
@@ -2723,7 +2723,7 @@ export default function App() {
 
 
       {/* 14_LANDOWNERS_SECTION */}
-      <section id="landowners" className="py-20 bg-white">
+      <section id="landowners" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
           {/* Left info description */}
@@ -2872,7 +2872,7 @@ export default function App() {
 
 
       {/* 15_CONTACT_SECTION */}
-      <section id="contact" className="py-20 bg-neutral-100">
+      <section id="contact" className="py-12 bg-neutral-100">
         <div className="max-w-7xl mx-auto px-4 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12">
           
           {/* Left Form: Get In Touch */}
@@ -3028,7 +3028,7 @@ export default function App() {
 
 
       {/* 15_FAQ_SECTION */}
-      <section className="py-20 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-4xl mx-auto px-4 space-y-8">
           <div className="text-center space-y-2">
             <span className="text-[10px] font-extrabold uppercase tracking-[0.3em] text-[#C8A165] block">

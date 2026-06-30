@@ -385,26 +385,26 @@ export default function ProjectCard({
         </div>
 
         {/* Content Panel */}
-        <div className="p-5 space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.2 text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
+        <div className="p-4 space-y-2.5">
+          <div className="flex flex-wrap items-center gap-1.5 min-h-[42px] content-center">
+            <div className="flex items-center gap-1.2 text-[9.5px] text-neutral-400 font-bold uppercase tracking-wider">
               <MapPin className="w-3.5 h-3.5 text-[#C8A165]" />
               <span>{language === "en" ? project.location : project.locationBn}</span>
             </div>
             
             {/* Proximity / Landmark Tag component dynamically customized */}
-            <span className="inline-flex items-center gap-1 bg-[#C8A165]/5 text-[#C8A165] text-[9.5px] font-bold px-2 py-0.5 rounded border border-[#C8A165]/15 transition-all">
+            <span className="inline-flex items-center gap-1 bg-[#C8A165]/5 text-[#C8A165] text-[9px] font-bold px-2 py-0.5 rounded border border-[#C8A165]/15 transition-all">
               <Compass className="w-3 h-3 text-[#C8A165]" />
               <span>{language === "en" ? info.landmarkEn : info.landmarkBn}</span>
             </span>
           </div>
 
-          <h3 className="font-serif font-black text-lg text-neutral-850 group-hover:text-[#1B4D3E] transition-colors duration-300 leading-tight">
+          <h3 className="font-serif font-black text-base text-neutral-850 group-hover:text-[#1B4D3E] transition-colors duration-300 leading-tight line-clamp-2 h-[42px] flex items-center">
             {language === "en" ? project.name : project.nameBn}
           </h3>
 
           {/* Specification layout grid with Interactive Price per SQFT conversion */}
-          <div className="grid grid-cols-2 gap-3 py-2.5 bg-neutral-50 px-3.5 rounded-lg border border-neutral-150 transition-colors duration-300">
+          <div className="grid grid-cols-2 gap-3 py-2 bg-neutral-50 px-3 rounded-lg border border-neutral-150 transition-colors duration-300">
             <div>
               <span className="text-neutral-400 text-[10px] block font-bold uppercase tracking-wider">{language === "en" ? "App Size" : "আয়তন"}:</span>
               <span className="font-extrabold text-neutral-700 text-xs">{language === "en" ? project.size : project.sizeBn}</span>
@@ -458,7 +458,7 @@ export default function ProjectCard({
       </div>
 
       {/* Action Button Bar */}
-      <div className="p-5 pt-0">
+      <div className="p-4 pt-0">
         <div className="flex gap-2">
           {/* Main Specs & Units Button */}
           <button 

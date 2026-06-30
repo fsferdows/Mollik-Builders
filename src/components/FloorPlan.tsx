@@ -64,7 +64,7 @@ export default function FloorPlan({ language = 'en', selectedProject, active3DPr
   const [isLoading3DFullscreen, setIsLoading3DFullscreen] = useState<boolean>(true);
   const [selectedFloor, setSelectedFloor] = useState<number>(1); // 0 = Ground Floor, 1-9 = Residential Floors
   const [selectedUnitId, setSelectedUnitId] = useState<string>('A');
-  const [layoutViewMode, setLayoutViewMode] = useState<'blueprint' | 'three3d' | 'analytics'>('blueprint');
+  const [layoutViewMode, setLayoutViewMode] = useState<'blueprint' | 'three3d' | 'analytics'>('three3d');
   const [selectedThreeStep, setSelectedThreeStep] = useState<string>('all');
   const [isFullScreen3D, setIsFullScreen3D] = useState<boolean>(false);
   const [is3DModelHidden, setIs3DModelHidden] = useState<boolean>(false);
@@ -740,7 +740,7 @@ export default function FloorPlan({ language = 'en', selectedProject, active3DPr
   const soldCount = allFlats.filter(f => f.status === 'Sold').length;
 
   return (
-    <section ref={sectionRef} id="floorplan" className="py-16 md:py-24 bg-gradient-to-b from-[#0c0e14] via-[#090b10] to-[#050609] text-white relative border-t border-neutral-900 overflow-hidden shadow-[inset_0_4px_30px_rgba(0,0,0,0.5)]">
+    <section ref={sectionRef} id="floorplan" className="py-12 md:py-16 bg-gradient-to-b from-[#0c0e14] via-[#090b10] to-[#050609] text-white relative border-t border-neutral-900 overflow-hidden shadow-[inset_0_4px_30px_rgba(0,0,0,0.5)]">
       {/* FULLSCREEN 3D CINEMATIC IMMERSION MODAL */}
       <AnimatePresence>
         {isFullScreen3D && (
@@ -1230,7 +1230,7 @@ export default function FloorPlan({ language = 'en', selectedProject, active3DPr
               </div>
 
               {/* WebGL Hosting */}
-              <div className="w-full relative h-[380px] sm:h-[450px] md:h-[500px] lg:h-[600px] bg-neutral-950">
+              <div className="w-full relative h-[320px] sm:h-[380px] md:h-[420px] lg:h-[480px] bg-neutral-950">
                 {(!isSectionInView || isLoading3D) && (
                   <div className="absolute inset-0 z-40 bg-neutral-950 flex flex-col items-center justify-center p-8 text-center overflow-hidden">
                     <style>{`

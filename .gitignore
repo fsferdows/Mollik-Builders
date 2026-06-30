@@ -10,3 +10,4 @@ coverage/
 .parcel-cache/
 .cache/
 .eslintcache
+.vercel
